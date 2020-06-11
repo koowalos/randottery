@@ -1,7 +1,10 @@
 import React from 'react';
-import { Tabs, Row, Col, Button } from 'antd';
+import { Tabs, Row, Col, Button, Typography } from 'antd';
+import LotteryTable from './LotteryTable';
 
 const { TabPane } = Tabs;
+const { Title } = Typography;
+
 interface HomeProps {
   history: {
     push: Function;
@@ -13,34 +16,54 @@ function callback(key) {
 
 const Home: React.FC<HomeProps> = (props) => {
   console.log(props);
+  const joinButton = (
+    <Button
+      onClick={() => {
+        props.history.push('/join');
+      }}
+    >
+      Join
+    </Button>
+  );
+  const createButton = (
+    <Button
+      onClick={() => {
+        props.history.push('/new');
+      }}
+    >
+      Create
+    </Button>
+  );
   return (
     <div>
-      <Row>
-        <Col span={12}>
-          <h1>Participate</h1>
-          <Button
-            onClick={() => {
-              props.history.push('/join');
-            }}
+      <Row justify="space-around" gutter={16}>
+        <Col xs={24} sm={24} md={12}>
+          <Title level={4}>Lotteries you are participating in</Title>
+          <Tabs
+            tabBarExtraContent={joinButton}
+            defaultActiveKey="1"
+            onChange={callback}
           >
-            JOIN
-          </Button>
-          <Tabs defaultActiveKey="1" onChange={callback}>
             <TabPane tab="In progress" key="1">
-              Content of Tab Pane 1
+              <LotteryTable />
             </TabPane>
             <TabPane tab="Ended" key="2">
-              Content of Tab Pane 2
+              <LotteryTable />
             </TabPane>
           </Tabs>
         </Col>
-        <Col span={12}>
-          <Tabs defaultActiveKey="1" onChange={callback}>
+        <Col xs={24} sm={24} md={12}>
+          <Title level={4}>Your current lotteries</Title>
+          <Tabs
+            tabBarExtraContent={createButton}
+            defaultActiveKey="1"
+            onChange={callback}
+          >
             <TabPane tab="In progress" key="1">
-              Content of Tab Pane 1
+              <LotteryTable />
             </TabPane>
             <TabPane tab="Ended" key="2">
-              Content of Tab Pane 2
+              <LotteryTable />
             </TabPane>
           </Tabs>
         </Col>
