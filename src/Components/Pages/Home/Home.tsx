@@ -16,31 +16,22 @@ function callback(key) {
 
 const Home: React.FC<HomeProps> = (props) => {
   console.log(props);
-  const joinButton = (
-    <Button
-      onClick={() => {
-        props.history.push('/join');
-      }}
-    >
-      Join
-    </Button>
-  );
-  const createButton = (
-    <Button
-      onClick={() => {
-        props.history.push('/new');
-      }}
-    >
-      Create
-    </Button>
-  );
+
   return (
     <div>
       <Row justify="space-around" gutter={16}>
         <Col xs={24} sm={24} md={12}>
           <Title level={4}>Lotteries you are participating in</Title>
           <Tabs
-            tabBarExtraContent={joinButton}
+            tabBarExtraContent={
+              <Button
+                onClick={() => {
+                  props.history.push('/join');
+                }}
+              >
+                Join
+              </Button>
+            }
             defaultActiveKey="1"
             onChange={callback}
           >
@@ -55,7 +46,15 @@ const Home: React.FC<HomeProps> = (props) => {
         <Col xs={24} sm={24} md={12}>
           <Title level={4}>Your current lotteries</Title>
           <Tabs
-            tabBarExtraContent={createButton}
+            tabBarExtraContent={
+              <Button
+                onClick={() => {
+                  props.history.push('/new');
+                }}
+              >
+                Create
+              </Button>
+            }
             defaultActiveKey="1"
             onChange={callback}
           >
