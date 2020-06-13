@@ -1,20 +1,24 @@
 import React from 'react';
 import { Table, Button, message } from 'antd';
-import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
-import { RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+
 const copy = require('copy-text-to-clipboard');
 
-// interface LotteryTableProps extends RouteComponentProps<any> {
-//   /* Parent component's props*/
-// }
-
-interface LotteryTableProps {}
+interface LotteryTableProps extends RouteComponentProps<any> {
+  data?: Array<{
+    key: string;
+    name: string;
+    id: string;
+    participants: string;
+    endDate: string;
+  }>;
+}
 
 const LotteryTable: React.FC<LotteryTableProps> = (props) => {
-  // const { history } = props;
+  const { history, data } = props;
+
   const columns = [
-    { title: 'Name', dataIndex: 'name' },
+    { title: 'Name', dataIndex: 'name', width: 300 },
     {
       title: 'ID',
       dataIndex: 'id',
@@ -31,39 +35,38 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
         </Button>
       ),
     },
-    { title: 'Participants', dataIndex: 'participants', width: 92 },
-    { title: 'End date', dataIndex: 'endDate', width: 125 },
+    {
+      title: 'Participants',
+      dataIndex: 'participants',
+      width: 92,
+      render: (text, row) => {
+        if (typeof row.participants === 'number') {
+          return (
+            <span>
+              {row.participants}/{row.maxParticipants}
+            </span>
+          );
+        }
+        return (
+          <span>
+            {row.participants.length}/{row.maxParticipants}
+          </span>
+        );
+      },
+    },
+    { title: 'End date', dataIndex: 'endDate', width: 225 },
     {
       title: 'Action',
       dataIndex: 'action',
       render: (text, row) => (
         <Button
           onClick={() => {
-            // history.push(`/lottery/${row.id}`);
+            history.push(`/lottery/${row.id}`);
           }}
         >
           Details
         </Button>
       ),
-    },
-  ];
-
-  const id_1 = uuidv4();
-  const id_2 = uuidv4();
-  const data = [
-    {
-      key: id_1,
-      name: 'John Brown',
-      id: id_1,
-      participants: '34/65',
-      endDate: moment().format('DD/MM/YYYY HH:MM'),
-    },
-    {
-      key: id_2,
-      name: 'John Brown',
-      id: id_2,
-      participants: '34/65',
-      endDate: moment().format('DD/MM/YYYY HH:MM'),
     },
   ];
 
@@ -80,4 +83,4 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
   );
 };
 
-export default LotteryTable;
+export default withRouter(LotteryTable);
