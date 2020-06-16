@@ -19,7 +19,7 @@ const tailFormItemLayout = {
     },
     sm: {
       span: 10,
-      offset: 7,
+      offset: 8,
     },
   },
 };
@@ -36,16 +36,12 @@ const Register: React.FC<RegisterProps> = (props) => {
   };
   return (
     <Row justify="center" align="middle" style={{ marginTop: 70 }}>
-      <Col span={8}>
+      <Col span={10}>
         <Form
           {...formItemLayout}
           form={form}
           name="register"
           onFinish={onFinish}
-          initialValues={{
-            residence: ['zhejiang', 'hangzhou', 'xihu'],
-            prefix: '86',
-          }}
           scrollToFirstError
         >
           <Form.Item
@@ -101,30 +97,7 @@ const Register: React.FC<RegisterProps> = (props) => {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item
-            label="Captcha"
-            extra="We must make sure that your are a human."
-          >
-            <Row gutter={8}>
-              <Col span={12}>
-                <Form.Item
-                  name="captcha"
-                  noStyle
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input the captcha you got!',
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Button>Get captcha</Button> TODO do we need captcha?
-              </Col>
-            </Row>
-          </Form.Item>
+
           <Form.Item
             name="agreement"
             valuePropName="checked"

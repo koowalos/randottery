@@ -3,7 +3,6 @@ import { Tabs, Row, Col, Button, Typography } from 'antd';
 import LotteryTable from './LotteryTable';
 import { RouteComponentProps } from 'react-router-dom';
 import axios from 'axios';
-import * as _ from 'lodash';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
