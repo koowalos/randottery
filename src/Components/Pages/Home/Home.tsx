@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Tabs, Row, Col, Button, Typography } from 'antd';
 import LotteryTable from './LotteryTable';
 import { RouteComponentProps } from 'react-router-dom';
-import axios from 'axios';
+import { useGetFetch } from '../../../Hooks/fetch';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -15,19 +15,22 @@ function callback(key) {
 }
 
 const Home: React.FC<HomeProps> = (props) => {
-  const [data, setData]: any = useState([]);
+  const request = useGetFetch(
+    'https://api.jsonbin.io/b/5ee40dde655d87580c4914d9/latest'
+  );
 
-  useEffect(() => {
-    axios
-      .get('https://api.jsonbin.io/b/5ee40dde655d87580c4914d9/latest')
-      .then((res) => {
-        // console.log(res.data);
-        setData(res.data);
-      })
-      .catch((err) => {
-        // console.log(err);
-      });
-  }, []);
+  const { loading, error, done, response } = request;
+
+  if (error) {
+    return <div>ERROR: {error.message}</div>;
+  }
+
+  if (loading || !done) {
+    return <div>LOADING...</div>;
+  }
+
+  const { data } = response;
+  console.log(data);
 
   return (
     <div>

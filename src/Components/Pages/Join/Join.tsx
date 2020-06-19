@@ -1,12 +1,13 @@
 import React from 'react';
-import { Input, Typography, Row, Col, Button } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-interface JoinProps {
-  someProp?: any;
-}
+import { Input, Typography, Row, Col } from 'antd';
+import { RouteComponentProps } from 'react-router-dom';
+
+const { Search } = Input;
+interface JoinProps extends RouteComponentProps<any> {}
 
 const { Title } = Typography;
 const Join: React.FC<JoinProps> = (props) => {
+  const { history } = props;
   return (
     <div>
       <Row justify="center">
@@ -20,21 +21,11 @@ const Join: React.FC<JoinProps> = (props) => {
         </Col>
       </Row>
       <Row justify="center">
-        <Col span={6}>
-          <Input
-            size="large"
-            placeholder="Lottery ID"
-            style={{ marginTop: 30 }}
-          />
-        </Col>
-        <Col span={1}>
-          <Button
-            size="large"
-            shape="circle"
-            icon={<SearchOutlined />}
-            style={{ marginTop: 30, marginLeft: 10 }}
-          />
-        </Col>
+        <Search
+          placeholder="Enter lottery ID"
+          onSearch={(value) => history.push(`/join/${value}`)}
+          style={{ width: 200, marginTop: 20 }}
+        />
       </Row>
     </div>
   );
