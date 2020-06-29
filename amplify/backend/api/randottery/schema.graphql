@@ -1,0 +1,24 @@
+enum LotteryStatus {
+  active
+  ended
+  canceled
+}
+
+type Lottery @model {
+  id: ID!
+  name: String!
+  maxParticipants: Int
+  endDate: Int!
+  endWhenFull: Boolean
+  numberOfWinners: Int
+  prize: String
+  status: LotteryStatus!
+  owner: String
+  participants: [Participant] @connection(name: "LotteryParticipants")
+}
+
+type Participant @model {
+  id: ID!
+  user: String
+  lottery: Lottery @connection(name: "LotteryParticipants")
+}
