@@ -4,6 +4,9 @@ import App from './App';
 import { Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import history from './history';
+import Amplify from 'aws-amplify';
+import config from './aws-exports';
+Amplify.configure(config);
 
 ReactDOM.render(
   <Router history={history}>

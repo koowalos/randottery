@@ -1,0 +1,10 @@
+{
+	"auth": {
+		"randottery4b14c804": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
+		}
+	}
+}

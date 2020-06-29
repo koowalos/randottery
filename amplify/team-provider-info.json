@@ -1,0 +1,20 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-randottery-dev-203238-authRole",
+            "UnauthRoleArn": "arn:aws:iam::809933593029:role/amplify-randottery-dev-203238-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::809933593029:role/amplify-randottery-dev-203238-authRole",
+            "Region": "eu-west-2",
+            "DeploymentBucketName": "amplify-randottery-dev-203238-deployment",
+            "UnauthRoleName": "amplify-randottery-dev-203238-unauthRole",
+            "StackName": "amplify-randottery-dev-203238",
+            "StackId": "arn:aws:cloudformation:eu-west-2:809933593029:stack/amplify-randottery-dev-203238/56ce5450-ba3f-11ea-9a02-0622cd7b28da",
+            "AmplifyAppId": "d1v8i1g47224af"
+        },
+        "categories": {
+            "auth": {
+                "randottery4b14c804": {}
+            }
+        }
+    }
+}

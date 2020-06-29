@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.less';
 import { Switch, Route, Link } from 'react-router-dom';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 
 import { Layout, Menu } from 'antd';
 import {
@@ -56,8 +57,9 @@ function App() {
           </div>
         </Footer>
       </Layout>
+      <AmplifySignOut />
     </div>
   );
 }
 
-export default App;
+export default withAuthenticator(App);
