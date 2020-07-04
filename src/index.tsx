@@ -4,11 +4,14 @@ import App from './App';
 import { Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import history from './history';
+import UserProvider from './Providers/UserProvider';
 
 ReactDOM.render(
-  <Router history={history}>
-    <App />
-  </Router>,
+  <UserProvider>
+    <Router history={history}>
+      <App />
+    </Router>
+  </UserProvider>,
   document.getElementById('root')
 );
 
