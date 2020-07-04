@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './App.less';
 import { Switch, Route, Link } from 'react-router-dom';
 
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Button } from 'antd';
 import {
   Landing,
   Home,
@@ -14,10 +14,16 @@ import {
   SignIn,
   Register,
 } from './Components/Pages';
+import { UserContext } from './Providers/UserProvider';
+import { signOut } from './firebase';
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
+  const user: any = useContext(UserContext);
+
+  console.log('user:', user);
+
   return (
     <div className="App">
       <Layout className="layout">
@@ -30,7 +36,17 @@ function App() {
               style={{ textAlign: 'right' }}
             >
               <Menu.Item key="1">
-                <Link to="/signin">Sign in</Link>
+                {user ? (
+                  <Button
+                    onClick={() => {
+                      signOut();
+                    }}
+                  >
+                    Sign Out {user.email}
+                  </Button>
+                ) : (
+                  <Link to="/signin">Sign in</Link>
+                )}
               </Menu.Item>
             </Menu>
           </div>
