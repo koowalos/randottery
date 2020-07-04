@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetFetch } from '../../../Hooks/fetch';
 import { Typography, Form, Input, Button } from 'antd';
+import { useDocument } from 'react-firebase-hooks/firestore';
+import firebase from 'firebase';
+import { joinLottery } from '../../../firebase';
+import { UserContext } from '../../../Providers/UserProvider';
+
 const { Title, Text } = Typography;
 interface JoinDetailsProps {
   someProp?: any;
@@ -9,37 +13,41 @@ interface JoinDetailsProps {
 
 const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   let { id } = useParams();
+
+  const user: any = useContext(UserContext);
+
+  const [values, loading, error]: any = useDocument(
+    firebase.firestore().doc(`lotteries/${id}`)
+  );
+
   const [form] = Form.useForm();
   console.log(id);
 
   const onFinish = (values) => {
+    joinLottery(id, user.uid);
+
     console.log('Received values of form: ', values);
   };
-
-  const request = useGetFetch(
-    'https://api.jsonbin.io/b/5eecfcd5e2ce6e3b2c75ba27/latest'
-  );
-
-  const { loading, error, done, response } = request;
 
   if (error) {
     return <div>ERROR: {error.message}</div>;
   }
 
-  if (loading || !done) {
+  if (loading || !values) {
     return <div>LOADING...</div>;
   }
 
-  const { data } = response;
+  console.log(values.data());
+
   const {
     name,
-    id: dataId,
     prize,
     participants,
     maxParticipants,
     endDate,
     endWhenFull,
-  } = data;
+  } = values.data();
+  const { id: dataId } = values;
 
   return (
     <div>
@@ -59,7 +67,7 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
           </Title>
         )}
         <Title level={4} style={{ marginTop: 50 }}>
-          Participants: {participants}/{maxParticipants}
+          Participants: {participants.length}/{maxParticipants}
         </Title>
         <Text type="secondary" style={{ marginTop: 30 }}>
           {endWhenFull
@@ -74,29 +82,13 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
         onFinish={onFinish}
         scrollToFirstError
       >
-        <Form.Item
-          name="displayName"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your Name',
-            },
-          ]}
-        >
+        {/* <Form.Item name="displayName">
           <Input placeholder="Displayed Name" />
         </Form.Item>
 
-        <Form.Item
-          name="uniqueName"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your Unique Name',
-            },
-          ]}
-        >
+        <Form.Item name="uniqueName">
           <Input placeholder="Unique name" />
-        </Form.Item>
+        </Form.Item> */}
 
         <Button block type="primary" htmlType="submit">
           JOIN

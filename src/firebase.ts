@@ -100,8 +100,20 @@ export const deleteLottery = (id) => {
   return 'deleteLottery';
 };
 
-export const joinLottery = (id) => {
-  return 'joinLottery';
+export const joinLottery = (lotteryId, uid) => {
+  console.log({ lotteryId, uid });
+  var currentLottery = db.collection('lotteries').doc(lotteryId);
+
+  currentLottery
+    .update({
+      participants: firebase.firestore.FieldValue.arrayUnion(uid),
+    })
+    .then(function () {
+      console.log('Document successfully written!');
+    })
+    .catch(function (error) {
+      console.error('Error writing document: ', error);
+    });
 };
 
 export const leaveLottery = (id) => {
