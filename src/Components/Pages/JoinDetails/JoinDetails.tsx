@@ -7,13 +7,6 @@ interface JoinDetailsProps {
   someProp?: any;
 }
 
-const formItemLayout = {
-  wrapperCol: {
-    xs: { span: 4 },
-    sm: { span: 10 },
-  },
-};
-
 const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   let { id } = useParams();
   const [form] = Form.useForm();
