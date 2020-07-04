@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/database';
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -16,6 +17,7 @@ firebase.initializeApp(config);
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+export const db = firestore;
 
 export const generateUserDocument = async (user, additionalData = {}) => {
   if (!user) return;
@@ -76,19 +78,32 @@ export const signOut = () => {
   auth.signOut();
 };
 
+export const createLottery = (data, uid) => {
+  console.log('createLottery', data);
 
-export const createLottery = (data) =>{
-  return 'createLottery'
-}
+  db.collection('lotteries')
+    .add({
+      status: 'active',
+      owner: uid,
+      participants: [],
+      ...data,
+    })
+    .then(function () {
+      console.log('Document successfully written!');
+    })
+    .catch(function (error) {
+      console.error('Error writing document: ', error);
+    });
+};
 
 export const deleteLottery = (id) => {
-  return 'deleteLottery'
-}
+  return 'deleteLottery';
+};
 
 export const joinLottery = (id) => {
-  return 'joinLottery'
-}
+  return 'joinLottery';
+};
 
 export const leaveLottery = (id) => {
-  return 'leaveLottery'
-}
+  return 'leaveLottery';
+};

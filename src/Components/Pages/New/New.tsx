@@ -1,5 +1,7 @@
-import React from 'react';
-import { Form, Input, Button, Switch, Typography, DatePicker } from 'antd';
+import React, { useContext } from 'react';
+import { Form, Input, Button, Checkbox, Typography, DatePicker } from 'antd';
+import { createLottery } from '../../../firebase';
+import { UserContext } from '../../../Providers/UserProvider';
 
 interface NewProps {
   someProp?: any;
@@ -8,12 +10,25 @@ interface NewProps {
 const { Title } = Typography;
 
 const New: React.FC<NewProps> = (props) => {
+  const user: any = useContext(UserContext);
+
   const onFinish = (fieldsValue) => {
     const values = {
       ...fieldsValue,
       endDate: fieldsValue['endDate'].format('YYYY-MM-DD HH:mm:ss'),
     };
-    console.log('Received values of form: ', values);
+
+    createLottery(
+      {
+        name: values.lotteryName,
+        maxParticipants: +values.maxParticipants,
+        endDate: values.endDate,
+        endWhenFull: values.endWhenFull,
+        numberOfWinners: +values.numberOfWinners,
+        prize: values.prize,
+      },
+      user.uid
+    );
   };
 
   return (
@@ -61,15 +76,22 @@ const New: React.FC<NewProps> = (props) => {
         <Form.Item label="Prize" name="prize">
           <Input placeholder="Enter prize name (optional)" />
         </Form.Item>
+        <Form.Item label="Number of participants" name="maxParticipants">
+          <Input
+            placeholder="Enter maximum number of participants"
+            type="number"
+          />
+        </Form.Item>
         <Form.Item label="Number of winners" name="numberOfWinners">
-          <Input placeholder="Default 1" />
+          <Input placeholder="Default 1" type="number" />
         </Form.Item>
-        <Form.Item label="Additional unique keyword" name="additional">
+        {/* <Form.Item label="Additional unique keyword" name="additional">
           <Input placeholder="Optional" />
-        </Form.Item>
-        <Form.Item name="endWhenFull">
-          <Switch style={{ marginRight: 16 }} />
-          Start immediately with max participants
+        </Form.Item> */}
+        <Form.Item valuePropName="checked" name="endWhenFull">
+          <Checkbox defaultChecked={false}>
+            Start immediately with max participants
+          </Checkbox>
         </Form.Item>
         <Form.Item style={{ textAlign: 'center' }}>
           <Button type="primary" htmlType="submit">
