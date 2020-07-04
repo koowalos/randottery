@@ -12,8 +12,6 @@ const config = {
   appId: process.env.REACT_APP_APPID,
 };
 
-console.log(config);
-
 firebase.initializeApp(config);
 
 export const auth = firebase.auth();
@@ -77,3 +75,20 @@ export const createUserWithEmailAndPasswordHandler = async (
 export const signOut = () => {
   auth.signOut();
 };
+
+
+export const createLottery = (data) =>{
+  return 'createLottery'
+}
+
+export const deleteLottery = (id) => {
+  return 'deleteLottery'
+}
+
+export const joinLottery = (id) => {
+  return 'joinLottery'
+}
+
+export const leaveLottery = (id) => {
+  return 'leaveLottery'
+}
