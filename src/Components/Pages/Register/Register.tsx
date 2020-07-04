@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, Row, Col, Checkbox, Button } from 'antd';
+import { createUserWithEmailAndPasswordHandler } from '../../../firebase';
 
 const formItemLayout = {
   labelCol: {
@@ -33,6 +34,7 @@ const Register: React.FC<RegisterProps> = (props) => {
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
+    createUserWithEmailAndPasswordHandler(values.email, values.password);
   };
   return (
     <Row justify="center" align="middle" style={{ marginTop: 70 }}>

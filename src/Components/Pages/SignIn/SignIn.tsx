@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-
+import { signInWithEmailAndPasswordHandler } from '../../../firebase';
 interface SignInProps {
   someProp?: any;
 }
@@ -10,6 +10,7 @@ interface SignInProps {
 const SignIn: React.FC<SignInProps> = (props) => {
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
+    signInWithEmailAndPasswordHandler(values.username, values.password);
   };
 
   return (

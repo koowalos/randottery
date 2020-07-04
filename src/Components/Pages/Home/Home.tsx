@@ -4,6 +4,9 @@ import LotteryTable from './LotteryTable';
 import { RouteComponentProps } from 'react-router-dom';
 import { useGetFetch } from '../../../Hooks/fetch';
 
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import firebase from 'firebase';
+
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
@@ -15,6 +18,11 @@ function callback(key) {
 }
 
 const Home: React.FC<HomeProps> = (props) => {
+  const [fbValues, fbLoading, fbError]: any = useCollectionData(
+    firebase.firestore().collection('users')
+  );
+  console.log('error:', { fbValues, fbLoading, fbError });
+
   const request = useGetFetch(
     'https://api.jsonbin.io/b/5ee40dde655d87580c4914d9/latest'
   );

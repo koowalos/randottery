@@ -11,9 +11,7 @@ const New: React.FC<NewProps> = (props) => {
   const onFinish = (fieldsValue) => {
     const values = {
       ...fieldsValue,
-      dateTimePicker: fieldsValue['dateTimePicker'].format(
-        'YYYY-MM-DD HH:mm:ss'
-      ),
+      endDate: fieldsValue['endDate'].format('YYYY-MM-DD HH:mm:ss'),
     };
     console.log('Received values of form: ', values);
   };
@@ -52,7 +50,7 @@ const New: React.FC<NewProps> = (props) => {
           <Input placeholder="Enter lottery name" />
         </Form.Item>
         <Form.Item
-          name="dateTimePicker"
+          name="endDate"
           label="End date"
           rules={[
             { type: 'object', required: true, message: 'Please select time!' },
@@ -60,16 +58,16 @@ const New: React.FC<NewProps> = (props) => {
         >
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
-        <Form.Item label="Prize">
+        <Form.Item label="Prize" name="prize">
           <Input placeholder="Enter prize name (optional)" />
         </Form.Item>
-        <Form.Item label="Number of winners">
+        <Form.Item label="Number of winners" name="numberOfWinners">
           <Input placeholder="Default 1" />
         </Form.Item>
-        <Form.Item label="Additional unique keyword">
+        <Form.Item label="Additional unique keyword" name="additional">
           <Input placeholder="Optional" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item name="endWhenFull">
           <Switch style={{ marginRight: 16 }} />
           Start immediately with max participants
         </Form.Item>
