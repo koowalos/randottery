@@ -17,8 +17,6 @@ interface LotteryTableProps extends RouteComponentProps<any> {
 const LotteryTable: React.FC<LotteryTableProps> = (props) => {
   const { history, data } = props;
 
-  console.log(data);
-
   const columns = [
     { title: 'Name', dataIndex: 'name', width: 300 },
     {

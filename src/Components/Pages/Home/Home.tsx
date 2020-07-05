@@ -17,18 +17,18 @@ function callback(key) {
 }
 
 const Home: React.FC<HomeProps> = (props) => {
-  const user: any = useContext(UserContext);
+  const userData: any = useContext(UserContext);
 
   const [myLotteries, myLoading, myError] = useCollection(
     firestore
       .collection('lotteries')
-      .where('owner', '==', user ? user.uid : '1')
+      .where('owner', '==', userData ? userData.user.uid : '1')
   );
 
   const [joinedLotteries, joinedLoading, joinedError] = useCollection(
     firestore
       .collection('lotteries')
-      .where('participants', 'array-contains', user ? user.uid : '1')
+      .where('participants', 'array-contains', userData ? userData.user.uid : '1')
   );
 
   if (myError) {

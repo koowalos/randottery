@@ -14,7 +14,7 @@ interface JoinDetailsProps {
 const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   let { id } = useParams();
 
-  const user: any = useContext(UserContext);
+  const userData: any = useContext(UserContext);
 
   const [values, loading, error]: any = useDocument(
     firebase.firestore().doc(`lotteries/${id}`)
@@ -24,7 +24,7 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   console.log(id);
 
   const onFinish = (values) => {
-    joinLottery(id, user.uid);
+    joinLottery(id, userData.user.uid);
 
     console.log('Received values of form: ', values);
   };

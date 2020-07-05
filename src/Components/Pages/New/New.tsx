@@ -10,7 +10,7 @@ interface NewProps {
 const { Title } = Typography;
 
 const New: React.FC<NewProps> = (props) => {
-  const user: any = useContext(UserContext);
+  const userData: any = useContext(UserContext);
 
   const onFinish = (fieldsValue) => {
     const values = {
@@ -27,7 +27,7 @@ const New: React.FC<NewProps> = (props) => {
         numberOfWinners: +values.numberOfWinners,
         prize: values.prize,
       },
-      user.uid
+      userData.user.uid
     );
   };
 

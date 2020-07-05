@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './App.less';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link,Redirect } from 'react-router-dom';
 
 import { Layout, Menu, Button } from 'antd';
 import {
@@ -20,9 +20,12 @@ import { signOut } from './firebase';
 const { Header, Content, Footer } = Layout;
 
 function App() {
-  const user: any = useContext(UserContext);
+  const userData: any = useContext(UserContext);
 
-  console.log('user:', user);
+
+  if (userData.loading){
+    return <div>Loading...</div>;
+  } 
 
   return (
     <div className="App">
@@ -32,17 +35,20 @@ function App() {
             <Menu
               theme="dark"
               mode="horizontal"
-              defaultSelectedKeys={['1']}
+              defaultSelectedKeys={['2']}
               style={{ textAlign: 'right' }}
             >
               <Menu.Item key="1">
-                {user ? (
+                <Link to="/">Home</Link>
+              </Menu.Item>
+              <Menu.Item key="2">
+                {userData.user ? (
                   <Button
                     onClick={() => {
                       signOut();
                     }}
                   >
-                    Sign Out {user.email}
+                    Sign Out {userData.user.email}
                   </Button>
                 ) : (
                   <Link to="/signin">Sign in</Link>
@@ -54,14 +60,21 @@ function App() {
         <Content style={{ padding: '0 10px' }}>
           <div className="custom-container">
             <Switch>
-              <Route exact path="/" component={Home} />
               <Route exact path="/signin" component={SignIn} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/landing" component={Landing} />
-              <Route exact path="/join" component={Join} />
-              <Route exact path="/join/:id" component={JoinDetails} />
-              <Route exact path="/new" component={New} />
-              <Route path="/lottery/:id" component={Lottery} />
+              {userData.user ? (
+                <>
+                  <Route exact path="/" component={Home} />
+                  <Route exact path="/join" component={Join} />
+                  <Route exact path="/join/:id" component={JoinDetails} />
+                  <Route exact path="/new" component={New} />
+                  <Route path="/lottery/:id" component={Lottery} />
+                </>
+              ) : (
+                <Redirect to="/signin" />
+              )}
+
               <Route component={Error404} />
             </Switch>
           </div>
