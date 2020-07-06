@@ -53,22 +53,38 @@ const getUserDocument = async (uid) => {
     console.error('Error fetching user', error);
   }
 };
-export const signInWithEmailAndPasswordHandler = (email, password) => {
-  auth.signInWithEmailAndPassword(email, password).catch((error) => {
-    console.error('Error signing in with password and email', error);
-  });
+export const signInWithEmailAndPasswordHandler = (
+  { email, password },
+  onSucceed,
+  onFail
+) => {
+  auth
+    .signInWithEmailAndPassword(email, password)
+    .then((res) => {
+      onSucceed();
+    })
+    .catch((error) => {
+      onFail();
+    });
 };
 
 export const createUserWithEmailAndPasswordHandler = async (
-  email,
-  password
+  { email, password },
+  onSucceed,
+  onFail
 ) => {
   try {
     const { user } = await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password);
     generateUserDocument(user, { displayName: 'My default Name' });
+    await onSucceed();
   } catch (error) {
+    console.log(error);
+    onFail({
+      code: error.code,
+      message: error.message,
+    });
     console.log('Error Signing up with email and password');
   }
 };

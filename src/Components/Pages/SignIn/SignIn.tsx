@@ -1,18 +1,37 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { signInWithEmailAndPasswordHandler } from '../../../firebase';
-interface SignInProps {
+import { UserContext } from '../../../Providers/UserProvider';
+interface SignInProps extends RouteComponentProps<any> {
   someProp?: any;
 }
 
 const SignIn: React.FC<SignInProps> = (props) => {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-    signInWithEmailAndPasswordHandler(values.username, values.password);
-  };
+  const userData: any = useContext(UserContext);
 
+  const [loading, setLoading] = useState(false);
+  const onFinish = (values) => {
+    setLoading(true);
+    const succeed = () => {
+      setLoading(false);
+      console.log('dobre');
+    };
+    const fail = () => {
+      setLoading(false);
+      console.log('zle');
+    };
+    const loginData = {
+      email: values.email,
+      password: values.password,
+    };
+
+    signInWithEmailAndPasswordHandler(loginData, succeed, fail);
+  };
+  if (userData.user) {
+    return <Redirect to="/" />;
+  }
   return (
     <Row justify="space-around" align="middle" style={{ marginTop: 70 }}>
       <Col span={4}>
@@ -23,8 +42,8 @@ const SignIn: React.FC<SignInProps> = (props) => {
           onFinish={onFinish}
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please input your email!' }]}
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
@@ -51,9 +70,10 @@ const SignIn: React.FC<SignInProps> = (props) => {
 
           <Form.Item>
             <Button
-              type="primary"
               htmlType="submit"
               className="login-form-button"
+              type="primary"
+              loading={loading}
             >
               Log in
             </Button>{' '}
