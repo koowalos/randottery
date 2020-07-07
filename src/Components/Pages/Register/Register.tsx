@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
+import { UserContext } from '../../../Providers/UserProvider';
 import { Form, Input, Row, Col, Checkbox, Button } from 'antd';
 import { createUserWithEmailAndPasswordHandler } from '../../../firebase';
 
@@ -24,17 +26,53 @@ const tailFormItemLayout = {
     },
   },
 };
-
-interface RegisterProps {
+interface RegisterProps extends RouteComponentProps<any> {
   someProp?: any;
 }
 
 const Register: React.FC<RegisterProps> = (props) => {
   const [form] = Form.useForm();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>(false);
+
+  useEffect(() => {
+    const email = form.getFieldValue('email');
+    const password = form.getFieldValue('password');
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        form.validateFields(['email']);
+        break;
+      case 'auth/weak-password':
+        form.validateFields(['password']);
+        break;
+
+      default:
+        break;
+    }
+    console.log({ email, password, error });
+  }, [error]);
+
+  const userData: any = useContext(UserContext);
+
   const onFinish = (values) => {
-    createUserWithEmailAndPasswordHandler(values.email, values.password);
+    setLoading(true);
+    const succeed = () => {
+      setLoading(false);
+      console.log('dobre');
+    };
+    const fail = (error) => {
+      setLoading(false);
+      setError(error);
+    };
+    const loginData = {
+      email: values.email,
+      password: values.password,
+    };
+
+    createUserWithEmailAndPasswordHandler(loginData, succeed, fail);
   };
+
   return (
     <Row justify="center" align="middle" style={{ marginTop: 70 }}>
       <Col span={10}>
@@ -57,6 +95,14 @@ const Register: React.FC<RegisterProps> = (props) => {
                 required: true,
                 message: 'Please input your E-mail!',
               },
+              () => ({
+                validator() {
+                  if (error.code === 'auth/email-already-in-use') {
+                    return Promise.reject(error.message);
+                  }
+                  return Promise.resolve();
+                },
+              }),
             ]}
           >
             <Input />
@@ -69,6 +115,14 @@ const Register: React.FC<RegisterProps> = (props) => {
                 required: true,
                 message: 'Please input your password!',
               },
+              () => ({
+                validator() {
+                  if (error.code === 'auth/weak-password') {
+                    return Promise.reject(error.message);
+                  }
+                  return Promise.resolve();
+                },
+              }),
             ]}
             hasFeedback
           >
@@ -98,7 +152,6 @@ const Register: React.FC<RegisterProps> = (props) => {
           >
             <Input.Password />
           </Form.Item>
-
           <Form.Item
             name="agreement"
             valuePropName="checked"
@@ -115,10 +168,9 @@ const Register: React.FC<RegisterProps> = (props) => {
             <Checkbox>I have read the agreement</Checkbox>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               Register
             </Button>
-            TODO social media sign-in
           </Form.Item>
         </Form>
       </Col>

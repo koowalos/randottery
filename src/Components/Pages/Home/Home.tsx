@@ -20,15 +20,13 @@ const Home: React.FC<HomeProps> = (props) => {
   const userData: any = useContext(UserContext);
 
   const [myLotteries, myLoading, myError] = useCollection(
-    firestore
-      .collection('lotteries')
-      .where('owner', '==', userData ? userData.user.uid : '1')
+    firestore.collection('lotteries').where('owner', '==', userData.user.uid)
   );
 
   const [joinedLotteries, joinedLoading, joinedError] = useCollection(
     firestore
       .collection('lotteries')
-      .where('participants', 'array-contains', userData ? userData.user.uid : '1')
+      .where('participants', 'array-contains', userData.user.uid)
   );
 
   if (myError) {
