@@ -2,23 +2,61 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone on the internet to view, edit, and delete
-    // all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // your app will lose access to your Firestore database
-     match /{document=**} {
-      allow read: if true;
-      allow write: if true;
+    // function isUnmodified(key) {
+    //   return request.resource.data[key] == resource.data[key]
+    // }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null;
     }
 
-    match /lotteries {
-       allow read: if true;
-      allow write: if true;
+    match /{document=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+    
+    match /users/{user} {
+      allow read: if 
+        isSignedIn() && 
+        user == request.auth.uid;
+      allow write: if 
+        isSignedIn() &&
+        user == request.auth.uid;
     }
 
+    match /lotteries/{lottery} {
+      allow get: if true;
+      allow list: if true;
+      // Allow CREATE new lottery
+      allow create: if 
+        isSignedIn() &&
+        // - only as yourself
+        request.auth.uid == request.resource.data.owner &&
+        // - status has to be active
+        request.resource.data.status == 'active' &&
+        // - participants must be empty
+        request.resource.data.participants.size() == 0;
+      allow update: if
+        isSignedIn() &&
+        // only allow modify active lotteries
+        request.resource.data.status == 'active' &&
+        // only allow modify participants field
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(["participants"]) &&
+        // only allow toggle logged user into array
+        (
+          request.resource.data.participants.toSet().difference(resource.data.participants.toSet()) == [request.auth.uid].toSet() ||
+          resource.data.participants.toSet().difference(request.resource.data.participants.toSet()) == [request.auth.uid].toSet()
+        ) &&
+        // Deny joining own lottery
+        request.auth.uid != request.resource.data.owner
+      // Allow DELETE only when 
+      // - there are no participants
+      allow delete: if 
+        isSignedIn() && 
+        // allow delete if user is owner
+        request.auth.uid == resource.data.owner && 
+        // and there are no participants
+        resource.data.participants.size() == 0;
+    }
   }
 }
