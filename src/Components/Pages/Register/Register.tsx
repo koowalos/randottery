@@ -1,44 +1,21 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { UserContext } from '../../../Providers/UserProvider';
 import { Form, Input, Row, Col, Checkbox, Button } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+
 import { createUserWithEmailAndPasswordHandler } from '../../../firebase';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 4 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 4 },
-    sm: { span: 10 },
-  },
-};
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 8,
-      offset: 0,
-    },
-    sm: {
-      span: 10,
-      offset: 8,
-    },
-  },
-};
 interface RegisterProps extends RouteComponentProps<any> {
   someProp?: any;
 }
 
 const Register: React.FC<RegisterProps> = (props) => {
   const [form] = Form.useForm();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(false);
 
   useEffect(() => {
-    const email = form.getFieldValue('email');
-    const password = form.getFieldValue('password');
     switch (error.code) {
       case 'auth/email-already-in-use':
         form.validateFields(['email']);
@@ -50,8 +27,7 @@ const Register: React.FC<RegisterProps> = (props) => {
       default:
         break;
     }
-    console.log({ email, password, error });
-  }, [error]);
+  }, [error, form]);
 
   const userData: any = useContext(UserContext);
 
@@ -75,9 +51,8 @@ const Register: React.FC<RegisterProps> = (props) => {
 
   return (
     <Row justify="center" align="middle" style={{ marginTop: 70 }}>
-      <Col span={10}>
+      <Col span={8}>
         <Form
-          {...formItemLayout}
           form={form}
           name="register"
           onFinish={onFinish}
@@ -85,7 +60,6 @@ const Register: React.FC<RegisterProps> = (props) => {
         >
           <Form.Item
             name="email"
-            label="E-mail"
             rules={[
               {
                 type: 'email',
@@ -105,11 +79,13 @@ const Register: React.FC<RegisterProps> = (props) => {
               }),
             ]}
           >
-            <Input />
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="E-mail"
+            />
           </Form.Item>
           <Form.Item
             name="password"
-            label="Password"
             rules={[
               {
                 required: true,
@@ -126,11 +102,14 @@ const Register: React.FC<RegisterProps> = (props) => {
             ]}
             hasFeedback
           >
-            <Input.Password />
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
           </Form.Item>
           <Form.Item
             name="confirm"
-            label="Confirm Password"
             dependencies={['password']}
             hasFeedback
             rules={[
@@ -150,11 +129,16 @@ const Register: React.FC<RegisterProps> = (props) => {
               }),
             ]}
           >
-            <Input.Password />
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
           </Form.Item>
           <Form.Item
             name="agreement"
             valuePropName="checked"
+            style={{ textAlign: 'center' }}
             rules={[
               {
                 validator: (_, value) =>
@@ -163,11 +147,10 @@ const Register: React.FC<RegisterProps> = (props) => {
                     : Promise.reject('Should accept agreement'),
               },
             ]}
-            {...tailFormItemLayout}
           >
             <Checkbox>I have read the agreement</Checkbox>
           </Form.Item>
-          <Form.Item {...tailFormItemLayout}>
+          <Form.Item style={{ textAlign: 'center' }}>
             <Button type="primary" htmlType="submit" loading={loading}>
               Register
             </Button>

@@ -64,7 +64,8 @@ export const signInWithEmailAndPasswordHandler = (
       onSucceed();
     })
     .catch((error) => {
-      onFail();
+      console.log(error);
+      onFail(error);
     });
 };
 

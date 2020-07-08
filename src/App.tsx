@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './App.less';
-import { Switch, Route, Link,Redirect } from 'react-router-dom';
+import { Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import { Layout, Menu, Button } from 'antd';
 import {
@@ -22,10 +22,9 @@ const { Header, Content, Footer } = Layout;
 function App() {
   const userData: any = useContext(UserContext);
 
-
-  if (userData.loading){
+  if (userData.loading) {
     return <div>Loading...</div>;
-  } 
+  }
 
   return (
     <div className="App">
@@ -38,18 +37,20 @@ function App() {
               defaultSelectedKeys={['2']}
               style={{ textAlign: 'right' }}
             >
-              <Menu.Item key="1">
-                <Link to="/">Home</Link>
-              </Menu.Item>
-              <Menu.Item key="2">
+              {userData.user ? (
+                <Menu.Item key="1">
+                  <Link to="/">Home</Link>
+                </Menu.Item>
+              ) : null}
+
+              <Menu.Item
+                key="2"
+                onClick={() => {
+                  signOut();
+                }}
+              >
                 {userData.user ? (
-                  <Button
-                    onClick={() => {
-                      signOut();
-                    }}
-                  >
-                    Sign Out {userData.user.email}
-                  </Button>
+                  `Sign Out ${userData.user.email}`
                 ) : (
                   <Link to="/signin">Sign in</Link>
                 )}
