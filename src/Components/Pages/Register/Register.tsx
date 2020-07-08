@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Redirect } from 'react-router-dom';
 import { UserContext } from '../../../Providers/UserProvider';
 import { Form, Input, Row, Col, Checkbox, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -48,7 +48,9 @@ const Register: React.FC<RegisterProps> = (props) => {
 
     createUserWithEmailAndPasswordHandler(loginData, succeed, fail);
   };
-
+  if (userData.user) {
+    return <Redirect to="/" />;
+  }
   return (
     <Row justify="center" align="middle" style={{ marginTop: 70 }}>
       <Col span={8}>

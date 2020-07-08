@@ -40,16 +40,12 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
       dataIndex: 'participants',
       width: 92,
       render: (text, row) => {
-        if (typeof row.participants === 'number') {
-          return (
-            <span>
-              {row.participants}/{row.maxParticipants}
-            </span>
-          );
-        }
+        const { participants, maxParticipants } = row;
+
         return (
           <span>
-            {row.participants.length}/{row.maxParticipants}
+            {participants.length}
+            {maxParticipants !== 0 ? `/${maxParticipants}` : null}
           </span>
         );
       },

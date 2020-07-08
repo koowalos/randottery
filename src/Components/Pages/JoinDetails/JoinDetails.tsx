@@ -67,7 +67,8 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
           </Title>
         )}
         <Title level={4} style={{ marginTop: 50 }}>
-          Participants: {participants.length}/{maxParticipants}
+          Participants: {participants.length}
+          {maxParticipants !== 0 ? `/${maxParticipants}` : null}
         </Title>
         <Text type="secondary" style={{ marginTop: 30 }}>
           {endWhenFull
@@ -82,20 +83,10 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
         onFinish={onFinish}
         scrollToFirstError
       >
-        {/* <Form.Item name="displayName">
-          <Input placeholder="Displayed Name" />
-        </Form.Item>
-
-        <Form.Item name="uniqueName">
-          <Input placeholder="Unique name" />
-        </Form.Item> */}
-
         <Button block type="primary" htmlType="submit">
           JOIN
         </Button>
       </Form>
-      {/* 
-      <pre>{JSON.stringify(response?.data, null, 2)}</pre> */}
     </div>
   );
 };

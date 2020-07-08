@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/database';
+import history from './history';
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -104,7 +105,8 @@ export const createLottery = (data, uid) => {
       participants: [],
       ...data,
     })
-    .then(function () {
+    .then(function (res) {
+      history.push(`/lottery/${res.id}`);
       console.log('Document successfully written!');
     })
     .catch(function (error) {

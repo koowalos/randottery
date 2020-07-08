@@ -10,6 +10,7 @@ interface NewProps {
 const { Title } = Typography;
 
 const New: React.FC<NewProps> = (props) => {
+  const [form] = Form.useForm();
   const userData: any = useContext(UserContext);
 
   const onFinish = (fieldsValue) => {
@@ -17,7 +18,7 @@ const New: React.FC<NewProps> = (props) => {
       ...fieldsValue,
       endDate: fieldsValue['endDate'].format('YYYY-MM-DD HH:mm:ss'),
     };
-
+    console.log(values);
     createLottery(
       {
         name: values.lotteryName,
@@ -45,6 +46,7 @@ const New: React.FC<NewProps> = (props) => {
         name="timeRelatedControls"
         layout="vertical"
         onFinish={onFinish}
+        form={form}
         style={{
           maxWidth: 400,
           margin: 'auto',
@@ -73,22 +75,33 @@ const New: React.FC<NewProps> = (props) => {
         >
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
-        <Form.Item label="Prize" name="prize">
+        <Form.Item label="Prize" name="prize" initialValue="">
           <Input placeholder="Enter prize name (optional)" />
         </Form.Item>
-        <Form.Item label="Number of participants" name="maxParticipants">
+        <Form.Item
+          label="Maximum number of participants"
+          name="maxParticipants"
+          help="Leave 0 for unlimited number of participants"
+          initialValue="0"
+        >
           <Input
             placeholder="Enter maximum number of participants"
             type="number"
           />
+          {/* TODO: validation participants > winners */}
         </Form.Item>
-        <Form.Item label="Number of winners" name="numberOfWinners">
+        <Form.Item
+          label="Number of winners"
+          name="numberOfWinners"
+          initialValue="1"
+        >
           <Input placeholder="Default 1" type="number" />
         </Form.Item>
-        {/* <Form.Item label="Additional unique keyword" name="additional">
-          <Input placeholder="Optional" />
-        </Form.Item> */}
-        <Form.Item valuePropName="checked" name="endWhenFull">
+        <Form.Item
+          valuePropName="checked"
+          name="endWhenFull"
+          initialValue={false}
+        >
           <Checkbox defaultChecked={false}>
             Start immediately with max participants
           </Checkbox>
