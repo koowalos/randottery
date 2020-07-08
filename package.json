@@ -32,6 +32,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "emulators": "firebase emulators:start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
