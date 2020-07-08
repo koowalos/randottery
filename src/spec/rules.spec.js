@@ -103,6 +103,14 @@ describe('Database rules', () => {
     ).toAllow();
   });
 
+  test('DENY JOIN full lottery', async () => {
+    await expect(
+      refLotteries.doc('koowal_c').update({
+        participants: ['kula', 'karni', 'ponciusz'],
+      })
+    ).toDeny();
+  });
+
   test('ALLOW LEAVE lottery', async () => {
     await expect(
       refLotteries.doc('koowal_b').update({

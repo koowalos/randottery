@@ -42,6 +42,8 @@ service cloud.firestore {
         request.resource.data.status == 'active' &&
         // only allow modify participants field
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(["participants"]) &&
+        // deny join full lotteries
+        resource.data.participants.size() < resource.data.maxParticipants &&
         // only allow toggle logged user into array
         (
           request.resource.data.participants.toSet().difference(resource.data.participants.toSet()) == [request.auth.uid].toSet() ||

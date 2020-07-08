@@ -82,11 +82,11 @@ export const mockData = {
   'lotteries/koowal_c': {
     endDate: '2020-07-11 23:15:41',
     endWhenFull: false,
-    maxParticipants: 200,
+    maxParticipants: 2,
     name: 'koowal_c',
     numberOfWinners: 1,
     owner: 'koowal',
-    participants: ['kula'],
+    participants: ['kula', 'karni'],
     prize: 'super klocki',
     status: 'active',
   },
