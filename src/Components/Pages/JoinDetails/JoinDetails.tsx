@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Form, Input, Button } from 'antd';
+import { Typography, Form, Button } from 'antd';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
 import { joinLottery } from '../../../firebase';
 import { UserContext } from '../../../Providers/UserProvider';
+import { timestampToDate } from '../../../helpers';
 
 const { Title, Text } = Typography;
 interface JoinDetailsProps {
@@ -73,7 +74,7 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
         <Text type="secondary" style={{ marginTop: 30 }}>
           {endWhenFull
             ? `This lottery will start immediately when maximum number of participants is reached`
-            : `This lottery will end on: ${endDate}`}
+            : `This lottery will end on: ${timestampToDate(endDate)}`}
         </Text>
       </div>
       <Form

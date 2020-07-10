@@ -14,9 +14,11 @@ const New: React.FC<NewProps> = (props) => {
   const userData: any = useContext(UserContext);
 
   const onFinish = (fieldsValue) => {
+    const endDate = +fieldsValue['endDate'].format('x');
+    console.log({ endDate }, fieldsValue['endDate']);
     const values = {
       ...fieldsValue,
-      endDate: fieldsValue['endDate'].format('YYYY-MM-DD HH:mm:ss'),
+      endDate,
     };
     console.log(values);
     createLottery(
@@ -73,7 +75,7 @@ const New: React.FC<NewProps> = (props) => {
             { type: 'object', required: true, message: 'Please select time!' },
           ]}
         >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+          <DatePicker showTime format="DD-MM-YYYY HH:mm" />
         </Form.Item>
         <Form.Item label="Prize" name="prize" initialValue="">
           <Input placeholder="Enter prize name (optional)" />

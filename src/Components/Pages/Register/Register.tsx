@@ -138,6 +138,20 @@ const Register: React.FC<RegisterProps> = (props) => {
             />
           </Form.Item>
           <Form.Item
+            name="displayName"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your display name!',
+              },
+            ]}
+          >
+            <Input
+              placeholder="Displayed name (public)"
+              prefix={<UserOutlined className="site-form-item-icon" />}
+            />
+          </Form.Item>
+          <Form.Item
             name="agreement"
             valuePropName="checked"
             style={{ textAlign: 'center' }}

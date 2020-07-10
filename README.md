@@ -4,8 +4,7 @@
 
 ## Tech stack:
 
-- AWS Amplify
-- DynamoDB
+- Firebase
 - React + TS
 - Styled Components
 - Node.js
@@ -33,7 +32,7 @@ As a lottery participant, you will have to log in and then you will be able to j
 
 ### Backend Logic
 
-``` javascript
+```javascript
 enum LotteryStatus {
   active
   ended
@@ -63,6 +62,7 @@ type Participant
 ```
 
 #### Lottery
+
 - Any authenticated user can create lottery.
 - Initial field values which can not be submited by creator:
   - `status: active`
@@ -76,19 +76,15 @@ type Participant
 - Owner can see who joined lottery (username + DisplayName) all emails are hidden except winner one after lottery end.
 
 #### Joining to Lottery (Participants table)
+
 - Owner can not join own lottery
 - User can join same lottery only once
 - User can leave lottery only when its still active
 - User can not see who joined lottery only number of participants is shown
-- User can see ended lotteries and (username + DisplayName) of winner(s) 
-
-
-
-
-
+- User can see ended lotteries and (username + DisplayName) of winner(s)
 
 ### Project purpose
 
-- Learn React, Node.js and AWS services.
+- Learn React, Node.js and Firebase services.
 - Solve potential problems and edge cases.
 - Build the project from the planning stage to release and making it live.

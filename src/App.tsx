@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import './App.less';
 import { Switch, Route, Link, Redirect } from 'react-router-dom';
 
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu } from 'antd';
 import {
   Landing,
   Home,
