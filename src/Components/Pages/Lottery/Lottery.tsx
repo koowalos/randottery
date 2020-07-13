@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { Typography, Form } from 'antd';
+import { useParams, RouteComponentProps } from 'react-router-dom';
+import { Typography, Form, Button } from 'antd';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
 import { joinLottery } from '../../../firebase';
@@ -8,10 +8,10 @@ import { UserContext } from '../../../Providers/UserProvider';
 import { timestampToDate } from '../../../helpers';
 
 const { Title, Text } = Typography;
-interface LotteryProps {
-  someProp?: any;
-}
+interface LotteryProps extends RouteComponentProps<any> {}
+
 const Lottery: React.FC<LotteryProps> = (props) => {
+  const { history } = props;
   let { id } = useParams();
 
   const userData: any = useContext(UserContext);
@@ -76,6 +76,20 @@ const Lottery: React.FC<LotteryProps> = (props) => {
             : `This lottery will end on: ${timestampToDate(endDate)}`}
         </Text>
       </div>
+      <Form>
+        <Form.Item style={{ marginTop: 30, textAlign: 'center' }}>
+          <Button
+            type="primary"
+            htmlType="button"
+            danger
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            Go back
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

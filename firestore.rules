@@ -43,7 +43,11 @@ service cloud.firestore {
         // only allow modify participants field
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(["participants"]) &&
         // deny join full lotteries
-        resource.data.participants.size() < resource.data.maxParticipants &&
+        (resource.data.participants.size() < resource.data.maxParticipants || resource.data.participants.size() == 0)  &&
+          // {/* TODO: validation participants > winners */}
+          // TODO: END DATE > NOW
+          //TODO: max >= 0, winners > 0
+
         // only allow toggle logged user into array
         (
           request.resource.data.participants.toSet().difference(resource.data.participants.toSet()) == [request.auth.uid].toSet() ||

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, RouteComponentProps } from 'react-router-dom';
 import { Typography, Form, Button } from 'antd';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
@@ -8,11 +8,10 @@ import { UserContext } from '../../../Providers/UserProvider';
 import { timestampToDate } from '../../../helpers';
 
 const { Title, Text } = Typography;
-interface JoinDetailsProps {
-  someProp?: any;
-}
+interface JoinDetailsProps extends RouteComponentProps<any> {}
 
 const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
+  const { history } = props;
   let { id } = useParams();
 
   const userData: any = useContext(UserContext);
@@ -78,13 +77,28 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
         </Text>
       </div>
       <Form
-        style={{ maxWidth: 400, margin: 'auto', marginTop: 30 }}
+        style={{
+          maxWidth: 400,
+          margin: 'auto',
+          marginTop: 30,
+          textAlign: 'center',
+        }}
         form={form}
         name="register"
         onFinish={onFinish}
         scrollToFirstError
       >
-        <Button block type="primary" htmlType="submit">
+        <Button
+          type="primary"
+          htmlType="button"
+          danger
+          onClick={() => {
+            history.goBack();
+          }}
+        >
+          Go back
+        </Button>{' '}
+        <Button type="primary" htmlType="submit">
           JOIN
         </Button>
       </Form>
