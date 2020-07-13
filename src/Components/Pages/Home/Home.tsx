@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Tabs, Row, Col, Button, Typography } from 'antd';
 import LotteryTable from './LotteryTable';
 import { RouteComponentProps } from 'react-router-dom';
-import { useGetFetch } from '../../../Hooks/fetch';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { firestore } from '../../../firebase';
+import { UserContext } from '../../../Providers/UserProvider';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -15,22 +17,43 @@ function callback(key) {
 }
 
 const Home: React.FC<HomeProps> = (props) => {
-  const request = useGetFetch(
-    'https://api.jsonbin.io/b/5ee40dde655d87580c4914d9/latest'
+  const userData: any = useContext(UserContext);
+
+  const [myLotteries, myLoading, myError] = useCollection(
+    firestore.collection('lotteries').where('owner', '==', userData.user.uid)
   );
 
-  const { loading, error, done, response } = request;
+  const [joinedLotteries, joinedLoading, joinedError] = useCollection(
+    firestore
+      .collection('lotteries')
+      .where('participants', 'array-contains', userData.user.uid)
+  );
 
-  if (error) {
-    return <div>ERROR: {error.message}</div>;
+  if (myError) {
+    return <div>ERROR: {myError.message}</div>;
+  }
+  if (joinedError) {
+    return <div>ERROR: {joinedError.message}</div>;
   }
 
-  if (loading || !done) {
+  if (myLoading || !myLotteries) {
     return <div>LOADING...</div>;
   }
 
-  const { data } = response;
-  console.log(data);
+  if (joinedLoading || !joinedLotteries) {
+    return <div>LOADING...</div>;
+  }
+
+  const myData: any = [];
+  const joinedData: any = [];
+
+  myLotteries.docs.map((doc) => {
+    myData.push({ ...doc.data(), key: doc.id, id: doc.id });
+  });
+
+  joinedLotteries.docs.map((doc) => {
+    joinedData.push({ ...doc.data(), key: doc.id, id: doc.id });
+  });
 
   return (
     <div>
@@ -52,17 +75,13 @@ const Home: React.FC<HomeProps> = (props) => {
           >
             <TabPane tab="In progress" key="1">
               <LotteryTable
-                data={data.filter(
-                  (o) => o.status === 'active' && o.ownerId !== '666'
-                )}
+                data={joinedData.filter((o) => o.status === 'active')}
               />
             </TabPane>
             <TabPane tab="Ended" key="2">
               <LotteryTable
-                data={data.filter(
-                  (o) =>
-                    (o.status === 'ended' || o.status === 'canceled') &&
-                    o.ownerId !== '666'
+                data={joinedData.filter(
+                  (o) => o.status === 'ended' || o.status === 'cancelled'
                 )}
               />
             </TabPane>
@@ -85,17 +104,13 @@ const Home: React.FC<HomeProps> = (props) => {
           >
             <TabPane tab="In progress" key="1">
               <LotteryTable
-                data={data.filter(
-                  (o) => o.status === 'active' && o.ownerId === '666'
-                )}
+                data={myData.filter((o) => o.status === 'active')}
               />
             </TabPane>
             <TabPane tab="Ended" key="2">
               <LotteryTable
-                data={data.filter(
-                  (o) =>
-                    (o.status === 'ended' || o.status === 'canceled') &&
-                    o.ownerId === '666'
+                data={myData.filter(
+                  (o) => o.status === 'ended' || o.status === 'cancelled'
                 )}
               />
             </TabPane>

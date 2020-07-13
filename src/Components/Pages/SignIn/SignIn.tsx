@@ -1,33 +1,81 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-
-interface SignInProps {
+import { signInWithEmailAndPasswordHandler } from '../../../firebase';
+import { UserContext } from '../../../Providers/UserProvider';
+interface SignInProps extends RouteComponentProps<any> {
   someProp?: any;
 }
 
 const SignIn: React.FC<SignInProps> = (props) => {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-  };
+  const [form] = Form.useForm();
+  const userData: any = useContext(UserContext);
+  const [error, setError] = useState<any>(false);
 
+  useEffect(() => {
+    switch (error.code) {
+      case 'auth/user-not-found':
+        form.validateFields(['email']);
+        break;
+      default:
+        break;
+    }
+  }, [error, form]);
+
+  const [loading, setLoading] = useState(false);
+  const onFinish = (values) => {
+    setLoading(true);
+    const succeed = () => {
+      setLoading(false);
+      console.log('dobre');
+    };
+    const fail = (error) => {
+      setLoading(false);
+      setError(error);
+    };
+    const loginData = {
+      email: values.email,
+      password: values.password,
+    };
+
+    signInWithEmailAndPasswordHandler(loginData, succeed, fail);
+  };
+  if (userData.user) {
+    return <Redirect to="/" />;
+  }
   return (
     <Row justify="space-around" align="middle" style={{ marginTop: 70 }}>
-      <Col span={4}>
+      <Col span={8}>
         <Form
+          form={form}
           name="normal_login"
           className="login-form"
           initialValues={{ remember: true }}
           onFinish={onFinish}
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            name="email"
+            rules={[
+              { required: true, message: 'Please input your email!' },
+              {
+                type: 'email',
+                message: 'The input is not valid E-mail!',
+              },
+
+              () => ({
+                validator() {
+                  if (error.code === 'auth/user-not-found') {
+                    return Promise.reject('User not found!');
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Username"
+              placeholder="E-mail "
             />
           </Form.Item>
           <Form.Item
@@ -40,7 +88,7 @@ const SignIn: React.FC<SignInProps> = (props) => {
               placeholder="Password"
             />
           </Form.Item>
-          <Form.Item>
+          <Form.Item style={{ textAlign: 'center' }}>
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
@@ -48,15 +96,18 @@ const SignIn: React.FC<SignInProps> = (props) => {
             <Link to="/password-reset">Forgot password</Link>
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
             <Button
-              type="primary"
               htmlType="submit"
               className="login-form-button"
+              type="primary"
+              loading={loading}
             >
               Log in
-            </Button>{' '}
-            Or <Link to="/register">register now!</Link>
+            </Button>
+            <div>
+              Or <Link to="/register">register now!</Link>
+            </div>
           </Form.Item>
         </Form>
       </Col>

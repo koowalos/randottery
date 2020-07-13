@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Button, message } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { timestampToDate } from '../../../helpers';
 
 const copy = require('copy-text-to-clipboard');
 
@@ -31,7 +32,7 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
             message.success(`Copied lottery URL to clipboard`, 1);
           }}
         >
-          Copy ID
+          Copy URL
         </Button>
       ),
     },
@@ -40,21 +41,22 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
       dataIndex: 'participants',
       width: 92,
       render: (text, row) => {
-        if (typeof row.participants === 'number') {
-          return (
-            <span>
-              {row.participants}/{row.maxParticipants}
-            </span>
-          );
-        }
+        const { participants, maxParticipants } = row;
+
         return (
           <span>
-            {row.participants.length}/{row.maxParticipants}
+            {participants.length}
+            {maxParticipants !== 0 ? `/${maxParticipants}` : null}
           </span>
         );
       },
     },
-    { title: 'End date', dataIndex: 'endDate', width: 225 },
+    {
+      title: 'End date',
+      dataIndex: 'endDate',
+      width: 225,
+      render: (endDate) => timestampToDate(endDate),
+    },
     {
       title: 'Action',
       dataIndex: 'action',

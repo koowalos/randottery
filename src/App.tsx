@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './App.less';
-import { Switch, Route, Link } from 'react-router-dom';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import {
@@ -15,10 +14,18 @@ import {
   SignIn,
   Register,
 } from './Components/Pages';
+import { UserContext } from './Providers/UserProvider';
+import { signOut } from './firebase';
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
+  const userData: any = useContext(UserContext);
+
+  if (userData.loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="App">
       <Layout className="layout">
@@ -27,11 +34,26 @@ function App() {
             <Menu
               theme="dark"
               mode="horizontal"
-              defaultSelectedKeys={['1']}
+              defaultSelectedKeys={['2']}
               style={{ textAlign: 'right' }}
             >
-              <Menu.Item key="1">
-                <Link to="/signin">Sign in</Link>
+              {userData.user ? (
+                <Menu.Item key="1">
+                  <Link to="/">Home</Link>
+                </Menu.Item>
+              ) : null}
+
+              <Menu.Item
+                key="2"
+                onClick={() => {
+                  signOut();
+                }}
+              >
+                {userData.user ? (
+                  `Sign Out ${userData.user.email}`
+                ) : (
+                  <Link to="/signin">Sign in</Link>
+                )}
               </Menu.Item>
             </Menu>
           </div>
@@ -39,14 +61,21 @@ function App() {
         <Content style={{ padding: '0 10px' }}>
           <div className="custom-container">
             <Switch>
-              <Route exact path="/" component={Home} />
               <Route exact path="/signin" component={SignIn} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/landing" component={Landing} />
-              <Route exact path="/join" component={Join} />
-              <Route exact path="/join/:id" component={JoinDetails} />
-              <Route exact path="/new" component={New} />
-              <Route path="/lottery/:id" component={Lottery} />
+              {userData.user ? (
+                <>
+                  <Route exact path="/" component={Home} />
+                  <Route exact path="/join" component={Join} />
+                  <Route exact path="/join/:id" component={JoinDetails} />
+                  <Route exact path="/new" component={New} />
+                  <Route path="/lottery/:id" component={Lottery} />
+                </>
+              ) : (
+                <Redirect to="/signin" />
+              )}
+
               <Route component={Error404} />
             </Switch>
           </div>
@@ -57,9 +86,8 @@ function App() {
           </div>
         </Footer>
       </Layout>
-      <AmplifySignOut />
     </div>
   );
 }
 
-export default withAuthenticator(App);
+export default App;

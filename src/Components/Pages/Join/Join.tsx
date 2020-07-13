@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Typography, Row, Col } from 'antd';
+import { Input, Typography, Row, Col, Form, Button } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 
 const { Search } = Input;
@@ -27,6 +27,20 @@ const Join: React.FC<JoinProps> = (props) => {
           style={{ width: 200, marginTop: 20 }}
         />
       </Row>
+      <Form>
+        <Form.Item style={{ marginTop: 30, textAlign: 'center' }}>
+          <Button
+            type="primary"
+            htmlType="button"
+            danger
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            Go back
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };
