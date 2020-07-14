@@ -1,5 +1,12 @@
 import { mockData, mockUser } from './mocks';
+import firebase from 'firebase/app';
 const { setup, teardown } = require('./helpers');
+
+const firebaseTimestamp = (seconds, subtract = false) => {
+  return firebase.firestore.Timestamp.fromMillis(
+    subtract ? Date.now() - seconds * 1000 : Date.now() + seconds * 1000
+  );
+};
 
 describe('Database rules', () => {
   let db;
@@ -19,26 +26,26 @@ describe('Database rules', () => {
     await teardown();
   });
 
-  test('DENY when reading/writing an unauthorized collection', async () => {
-    await expect(ref.get()).toDeny();
-  });
-
-  test('DENY when read users collection', async () => {
-    await expect(refUsers.get()).toDeny();
-  });
-
-  test('ALLOW when read current user', async () => {
+  test('READ   | ALLOW | when read current user', async () => {
     await expect(refUsers.doc('ponciusz')).toAllow();
   });
 
-  test('DENY when read other user profile', async () => {
+  test('READ   | DENY  | when reading/writing an unauthorized collection', async () => {
+    await expect(ref.get()).toDeny();
+  });
+
+  test('READ   | DENY  | when read users collection', async () => {
+    await expect(refUsers.get()).toDeny();
+  });
+
+  test('READ   | DENY  | when read other user profile', async () => {
     await expect(refUsers.doc('kowal').get()).toDeny();
   });
 
-  test('ALLOW CREATE Lottery', async () => {
+  test('CREATE | ALLOW | create Lottery', async () => {
     await expect(
       refLotteries.doc('ponciusz_new').set({
-        endDate: '2020-07-11 23:15:41',
+        endDate: firebaseTimestamp(3600),
         endWhenFull: true,
         maxParticipants: 100,
         name: 'loteria',
@@ -51,14 +58,58 @@ describe('Database rules', () => {
     ).toAllow();
   });
 
-  test('ALLOW DELETE own empty Lottery', async () => {
-    await expect(refLotteries.doc('ponciusz_new').delete()).toAllow();
+  test('CREATE | DENY  | create Lottery with passed date ', async () => {
+    await expect(
+      refLotteries.doc('ponciusz_passed').set({
+        endDate: firebaseTimestamp(3600, true),
+        endWhenFull: true,
+        maxParticipants: 100,
+        name: 'loteria',
+        numberOfWinners: 1,
+        owner: 'ponciusz',
+        participants: [],
+        prize: 'banan',
+        status: 'active',
+      })
+    ).toDeny();
   });
 
-  test('DENY CREATE lottery with predefined participants', async () => {
+  test('CREATE | DENY  | create Lottery with more winners than participants', async () => {
+    await expect(
+      refLotteries.doc('ponciusz_participants').set({
+        endDate: firebaseTimestamp(3600),
+        endWhenFull: true,
+        maxParticipants: 10,
+        name: 'loteria',
+        numberOfWinners: 10,
+        owner: 'ponciusz',
+        participants: [],
+        prize: 'banan',
+        status: 'active',
+      })
+    ).toDeny();
+  });
+
+  test('CREATE | DENY  | create Lottery with 1 participant', async () => {
+    await expect(
+      refLotteries.doc('ponciusz_participants').set({
+        endDate: firebaseTimestamp(3600),
+        endWhenFull: true,
+        maxParticipants: 1,
+        name: 'loteria',
+        numberOfWinners: 0,
+        owner: 'ponciusz',
+        participants: [],
+        prize: 'banan',
+        status: 'active',
+      })
+    ).toDeny();
+  });
+
+  test('CREATE | DENY  | create lottery with predefined participants', async () => {
     await expect(
       refLotteries.doc('ponciusz3').set({
-        endDate: '2020-07-11 23:15:41',
+        endDate: firebaseTimestamp(3600),
         endWhenFull: true,
         maxParticipants: 100,
         name: 'loteria',
@@ -71,10 +122,10 @@ describe('Database rules', () => {
     ).toDeny();
   });
 
-  test('DENY CREATE lottery as somebody else', async () => {
+  test('CREATE | DENY  | create lottery as somebody else', async () => {
     await expect(
       refLotteries.doc('ponciusz_new2').set({
-        endDate: '2020-07-11 23:15:41',
+        endDate: firebaseTimestamp(3600),
         endWhenFull: true,
         maxParticipants: 100,
         name: 'loteria',
@@ -87,15 +138,7 @@ describe('Database rules', () => {
     ).toDeny();
   });
 
-  test('DENY JOIN own lottery', async () => {
-    await expect(
-      refLotteries.doc('ponciusz_a').update({
-        participants: ['koowal', 'kula', 'ponciusz'],
-      })
-    ).toDeny();
-  });
-
-  test('ALLOW JOIN lottery', async () => {
+  test('UPDATE | ALLOW | join lottery', async () => {
     await expect(
       refLotteries.doc('koowal_b').update({
         participants: ['kula', 'ponciusz'],
@@ -103,15 +146,7 @@ describe('Database rules', () => {
     ).toAllow();
   });
 
-  test('DENY JOIN full lottery', async () => {
-    await expect(
-      refLotteries.doc('koowal_c').update({
-        participants: ['kula', 'karni', 'ponciusz'],
-      })
-    ).toDeny();
-  });
-
-  test('ALLOW LEAVE lottery', async () => {
+  test('UPDATE | ALLOW | leave lottery', async () => {
     await expect(
       refLotteries.doc('koowal_b').update({
         participants: ['kula'],
@@ -119,12 +154,32 @@ describe('Database rules', () => {
     ).toAllow();
   });
 
-  test('DENY JOIN ended lottery', async () => {
+  test('UPDATE | DENY  | join own lottery', async () => {
+    await expect(
+      refLotteries.doc('ponciusz_a').update({
+        participants: ['koowal', 'kula', 'ponciusz'],
+      })
+    ).toDeny();
+  });
+
+  test('UPDATE | DENY  | join full lottery', async () => {
+    await expect(
+      refLotteries.doc('koowal_c').update({
+        participants: ['kula', 'karni', 'ponciusz'],
+      })
+    ).toDeny();
+  });
+
+  test('UPDATE | DENY  | join ended lottery', async () => {
     await expect(
       refLotteries.doc('kowal_c').update({
         participants: ['kula', 'ponciusz'],
       })
     ).toDeny();
+  });
+
+  test('DELETE | ALLOW | delete own empty Lottery', async () => {
+    await expect(refLotteries.doc('ponciusz_new').delete()).toAllow();
   });
 
   // test('Read all lotteries', async () => {

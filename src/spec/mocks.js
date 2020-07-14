@@ -1,3 +1,5 @@
+const now = parseInt(Date.now() / 1000);
+
 export const mockUser = {
   uid: 'ponciusz',
   email: 'ponciusz@gmail.com',
@@ -25,7 +27,10 @@ export const mockData = {
     photoURL: null,
   },
   'lotteries/ponciusz_a': {
-    endDate: '2020-07-11 23:15:41',
+    endDate: {
+      seconds: now + 3600,
+      nanoseconds: 828000000,
+    },
     endWhenFull: true,
     maxParticipants: 100,
     name: 'ponciusz_a',
@@ -36,7 +41,10 @@ export const mockData = {
     status: 'active',
   },
   'lotteries/ponciusz_b': {
-    endDate: '2020-07-11 23:15:41',
+    endDate: {
+      seconds: now + 3600,
+      nanoseconds: 828000000,
+    },
     endWhenFull: true,
     maxParticipants: 100,
     name: 'ponciusz_b',
@@ -47,7 +55,10 @@ export const mockData = {
     status: 'active',
   },
   'lotteries/ponciusz_c': {
-    endDate: '2020-07-11 23:15:41',
+    endDate: {
+      seconds: now + 3600,
+      nanoseconds: 828000000,
+    },
     endWhenFull: true,
     maxParticipants: 100,
     name: 'ponciusz_c',
@@ -58,7 +69,10 @@ export const mockData = {
     status: 'ended',
   },
   'lotteries/koowal_a': {
-    endDate: '2020-07-11 23:15:41',
+    endDate: {
+      seconds: now + 3600,
+      nanoseconds: 828000000,
+    },
     endWhenFull: false,
     maxParticipants: 200,
     name: 'koowal_a',
@@ -69,7 +83,10 @@ export const mockData = {
     status: 'active',
   },
   'lotteries/koowal_b': {
-    endDate: '2020-07-11 23:15:41',
+    endDate: {
+      seconds: now + 3600,
+      nanoseconds: 828000000,
+    },
     endWhenFull: false,
     maxParticipants: 200,
     name: 'koowal_b',
@@ -80,7 +97,10 @@ export const mockData = {
     status: 'active',
   },
   'lotteries/koowal_c': {
-    endDate: '2020-07-11 23:15:41',
+    endDate: {
+      seconds: now + 3600,
+      nanoseconds: 828000000,
+    },
     endWhenFull: false,
     maxParticipants: 2,
     name: 'koowal_c',
