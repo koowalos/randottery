@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useParams, RouteComponentProps } from 'react-router-dom';
 import { Typography, Form, Button } from 'antd';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
-import { joinLottery } from '../../../firebase';
-import { UserContext } from '../../../Providers/UserProvider';
+
 import { timestampToDate } from '../../../helpers';
 
 const { Title, Text } = Typography;
@@ -14,20 +13,9 @@ const Lottery: React.FC<LotteryProps> = (props) => {
   const { history } = props;
   let { id } = useParams();
 
-  const userData: any = useContext(UserContext);
-
   const [values, loading, error]: any = useDocument(
     firebase.firestore().doc(`lotteries/${id}`)
   );
-
-  const [form] = Form.useForm();
-  console.log(id);
-
-  const onFinish = (values) => {
-    joinLottery(id, userData.user.uid);
-
-    console.log('Received values of form: ', values);
-  };
 
   if (error) {
     return <div>ERROR: {error.message}</div>;
@@ -36,8 +24,6 @@ const Lottery: React.FC<LotteryProps> = (props) => {
   if (loading || !values) {
     return <div>LOADING...</div>;
   }
-
-  console.log(values.data());
 
   const {
     name,
@@ -73,7 +59,7 @@ const Lottery: React.FC<LotteryProps> = (props) => {
         <Text type="secondary" style={{ marginTop: 30 }}>
           {endWhenFull
             ? `This lottery will start immediately when maximum number of participants is reached`
-            : `This lottery will end on: ${timestampToDate(endDate)}`}
+            : `This lottery will end on: ${timestampToDate(endDate.seconds)}`}
         </Text>
       </div>
       <Form>

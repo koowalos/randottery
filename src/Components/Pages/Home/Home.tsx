@@ -47,11 +47,11 @@ const Home: React.FC<HomeProps> = (props) => {
   const myData: any = [];
   const joinedData: any = [];
 
-  myLotteries.docs.map((doc) => {
+  myLotteries.docs.forEach((doc) => {
     myData.push({ ...doc.data(), key: doc.id, id: doc.id });
   });
 
-  joinedLotteries.docs.map((doc) => {
+  joinedLotteries.docs.forEach((doc) => {
     joinedData.push({ ...doc.data(), key: doc.id, id: doc.id });
   });
 

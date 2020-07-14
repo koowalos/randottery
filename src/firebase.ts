@@ -100,10 +100,11 @@ export const createLottery = (data, uid) => {
 
   db.collection('lotteries')
     .add({
+      ...data,
       status: 'active',
       owner: uid,
       participants: [],
-      ...data,
+      endDate: firebase.firestore.Timestamp.fromMillis(data.endDate),
     })
     .then(function (res) {
       history.push(`/lottery/${res.id}`);

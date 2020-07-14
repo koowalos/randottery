@@ -28,7 +28,6 @@ const New: React.FC<NewProps> = (props) => {
 
   const onFinish = (fieldsValue) => {
     const endDate = +fieldsValue['endDate'].format('x');
-    console.log({ endDate }, fieldsValue['endDate']);
     const values = {
       ...fieldsValue,
       endDate,
