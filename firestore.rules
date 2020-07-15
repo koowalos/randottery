@@ -39,9 +39,9 @@ service cloud.firestore {
         // - participants must be empty
         request.resource.data.participants.size() == 0 &&
         // - maxParticipants more than one
-        request.resource.data.maxParticipants > 1 &&
+        (request.resource.data.maxParticipants == 0 || request.resource.data.maxParticipants > 1) &&
         // - maxParticipants must be bigger than numberOfWinners
-        request.resource.data.maxParticipants > request.resource.data.numberOfWinners
+        (request.resource.data.maxParticipants == 0 || request.resource.data.maxParticipants > request.resource.data.numberOfWinners)
         
       allow update: if
         isSignedIn() &&
