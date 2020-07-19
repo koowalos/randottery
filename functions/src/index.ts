@@ -8,15 +8,16 @@ admin.initializeApp();
 
 // Get the project ID from the FIREBASE_CONFIG env var
 
+const location = 'europe-west2';
+const project = JSON.parse(process.env.FIREBASE_CONFIG!).projectId;
+
 export const addToTaskQueue = functions
-  .region('europe-west2')
+  .region(location)
   .firestore.document('/lotteries/{documentId}')
   .onCreate((snap, context) => {
     functions.logger.log('Changing status to ready', context.params.documentId);
     const endDate = snap.data().endDate;
-    const project = JSON.parse(process.env.FIREBASE_CONFIG!).projectId;
     // const project = 'randottery';
-    const location = 'europe-west2';
     const queue = 'firestore-ttl';
     const tasksClient = new CloudTasksClient();
     const queuePath: string = tasksClient.queuePath(project, location, queue);
@@ -50,7 +51,7 @@ export const addToTaskQueue = functions
   });
 
 export const initLotterySolver = functions
-  .region('europe-west2')
+  .region(location)
   .https.onRequest(async (req, res) => {
     const lotteryId: any = req.query.id;
     if (!lotteryId) {

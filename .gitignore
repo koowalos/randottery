@@ -28,4 +28,5 @@ firestore-debug.log
 ui-debug.log
 AUTHDOMAIN.log
 
+.firebase
 .firebaserc
