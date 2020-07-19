@@ -32,35 +32,6 @@ As a lottery participant, you will have to log in and then you will be able to j
 
 ### Backend Logic
 
-```javascript
-enum LotteryStatus {
-  active
-  ended
-  canceled
-}
-
-type Lottery @model @auth(rules: [{ allow: owner, ownerField: "owner", queries: null }]) {
-  id: ID!
-  name: String!
-  maxParticipants: Int
-  endDate: Int!
-  endWhenFull: Boolean
-  numberOfWinners: Int
-  prize: String
-  status: LotteryStatus!
-  owner: String
-  participants: [Participant] @connection(name: "LotteryParticipants")
-}
-
-type Participant
-  @model
-  @auth(rules: [{ allow: owner, ownerField: "user", queries: null }]) {
-  id: ID!
-  user: String
-  lottery: Lottery @connection(name: "LotteryParticipants")
-}
-```
-
 #### Lottery
 
 - Any authenticated user can create lottery.
