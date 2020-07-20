@@ -10,6 +10,7 @@ admin.initializeApp();
 
 const location = 'europe-west2';
 const project = JSON.parse(process.env.FIREBASE_CONFIG!).projectId;
+const serviceAccountEmail = 'cloudtask@randottery-dev.iam.gserviceaccount.com';
 
 export const addToTaskQueue = functions
   .region(location)
@@ -26,6 +27,9 @@ export const addToTaskQueue = functions
       httpRequest: {
         httpMethod: 'POST',
         url,
+        oidcToken: {
+          serviceAccountEmail,
+        },
       },
       scheduleTime: {
         seconds: endDate.seconds,
@@ -55,6 +59,7 @@ export const initLotterySolver = functions
   .https.onRequest(async (req, res) => {
     const lotteryId: any = req.query.id;
     if (!lotteryId) {
+      functions.logger.error('Lottery ID missing');
       res.status(400).json({ message: `Lottery ID missing` });
       return;
     }
@@ -63,12 +68,14 @@ export const initLotterySolver = functions
     const doc = await lotteryRef.get();
 
     if (!doc.exists) {
+      functions.logger.error('Lottery does not exist');
       res.status(400).json({ message: `Lottery does not exist` });
       return;
     }
 
     const { participants, numberOfWinners, winners, status }: any = doc.data();
     if (winners || status !== 'active') {
+      functions.logger.error('Lottery already closed');
       res.status(400).json({ message: `Lottery already closed` });
       return;
     }
@@ -89,6 +96,7 @@ export const initLotterySolver = functions
       res.status(200).json({ message: `ok`, winners: winnersResult });
       return;
     } catch (err) {
+      functions.logger.error('Something is wrong', err);
       res.status(400).json({ message: `Something is wrong`, err });
       return;
     }
