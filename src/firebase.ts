@@ -2,8 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/database';
-// import history from './history';
-// import axios from 'axios';
+import history from './history';
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -109,35 +108,6 @@ export const signOut = () => {
 export const createLottery = (data, uid) => {
   console.log('createLottery', data);
 
-  // if (auth.currentUser) {
-  //   auth.currentUser
-  //     .getIdToken(true)
-  //     .then(function (idToken) {
-  //       const config = {
-  //         headers: { Authorization: `Bearer ${idToken}` },
-  //       };
-
-  //       // Send token to your backend via HTTPS
-  //       axios
-  //         .post(
-  //           'http://localhost:5001/randomizer-ae71a/us-central1/createLottery',
-  //           data,
-  //           config
-  //         )
-  //         .then((res) => {
-  //           console.log(res);
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //         });
-
-  //       console.log({ idToken });
-  //     })
-  //     .catch(function (error) {
-  //       // Handle error
-  //     });
-  // }
-
   db.collection('lotteries')
     .add({
       ...data,
@@ -147,7 +117,7 @@ export const createLottery = (data, uid) => {
       endDate: firebase.firestore.Timestamp.fromMillis(data.endDate),
     })
     .then(function (res) {
-      // history.push(`/lottery/${res.id}`);
+      history.push(`/lottery/${res.id}`);
       console.log('Document successfully written!');
     })
     .catch(function (error) {

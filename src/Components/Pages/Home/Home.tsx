@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Tabs, Row, Col, Button, Typography } from 'antd';
+import { Tabs, Row, Col, Button, Typography, Badge } from 'antd';
 import LotteryTable from './LotteryTable';
 import { RouteComponentProps } from 'react-router-dom';
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -11,9 +11,6 @@ const { Title } = Typography;
 
 interface HomeProps extends RouteComponentProps<any> {
   /* Parent component's props*/
-}
-function callback(key) {
-  console.log(key);
 }
 
 const Home: React.FC<HomeProps> = (props) => {
@@ -55,6 +52,15 @@ const Home: React.FC<HomeProps> = (props) => {
     joinedData.push({ ...doc.data(), key: doc.id, id: doc.id });
   });
 
+  const joinedActive = joinedData.filter((o) => o.status === 'active');
+  const joinedEnded = joinedData.filter(
+    (o) => o.status === 'ended' || o.status === 'cancelled'
+  );
+  const myActive = myData.filter((o) => o.status === 'active');
+  const myEnded = myData.filter(
+    (o) => o.status === 'ended' || o.status === 'cancelled'
+  );
+
   return (
     <div>
       <Row justify="space-around" gutter={16}>
@@ -71,19 +77,28 @@ const Home: React.FC<HomeProps> = (props) => {
               </Button>
             }
             defaultActiveKey="1"
-            onChange={callback}
           >
-            <TabPane tab="In progress" key="1">
-              <LotteryTable
-                data={joinedData.filter((o) => o.status === 'active')}
-              />
+            <TabPane
+              tab={
+                <>
+                  In progress{' '}
+                  <span style={{ color: '#ccc' }}>({joinedActive.length})</span>
+                </>
+              }
+              key="1"
+            >
+              <LotteryTable data={joinedActive} />
             </TabPane>
-            <TabPane tab="Ended" key="2">
-              <LotteryTable
-                data={joinedData.filter(
-                  (o) => o.status === 'ended' || o.status === 'cancelled'
-                )}
-              />
+            <TabPane
+              tab={
+                <>
+                  Ended{' '}
+                  <span style={{ color: '#ccc' }}>({joinedEnded.length})</span>
+                </>
+              }
+              key="2"
+            >
+              <LotteryTable data={joinedEnded} />
             </TabPane>
           </Tabs>
         </Col>
@@ -100,19 +115,28 @@ const Home: React.FC<HomeProps> = (props) => {
               </Button>
             }
             defaultActiveKey="1"
-            onChange={callback}
           >
-            <TabPane tab="In progress" key="1">
-              <LotteryTable
-                data={myData.filter((o) => o.status === 'active')}
-              />
+            <TabPane
+              tab={
+                <>
+                  In progress{' '}
+                  <span style={{ color: '#ccc' }}>({myActive.length})</span>
+                </>
+              }
+              key="1"
+            >
+              <LotteryTable data={myActive} />
             </TabPane>
-            <TabPane tab="Ended" key="2">
-              <LotteryTable
-                data={myData.filter(
-                  (o) => o.status === 'ended' || o.status === 'cancelled'
-                )}
-              />
+            <TabPane
+              tab={
+                <>
+                  Ended{' '}
+                  <span style={{ color: '#ccc' }}>({myEnded.length})</span>
+                </>
+              }
+              key="2"
+            >
+              <LotteryTable data={myEnded} />
             </TabPane>
           </Tabs>
         </Col>
