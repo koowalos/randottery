@@ -1,16 +1,14 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as _ from 'lodash';
+require('dotenv').config();
 const { CloudTasksClient } = require('@google-cloud/tasks');
+
 admin.initializeApp();
-// const db = admin.firestore();
-// const auth = admin.auth();
 
-// Get the project ID from the FIREBASE_CONFIG env var
-
-const location = 'europe-west2';
-const project = JSON.parse(process.env.FIREBASE_CONFIG!).projectId;
-const serviceAccountEmail = 'cloudtask@randottery-dev.iam.gserviceaccount.com';
+const location = process.env.LOCATION || 'europe-west2';
+const project = process.env.PROJECT;
+const serviceAccountEmail = process.env.SERVICEACCOUNTEMAIL;
 
 export const addToTaskQueue = functions
   .region(location)
@@ -25,8 +23,6 @@ export const addToTaskQueue = functions
     const tasksClient = new CloudTasksClient();
     const queuePath: string = tasksClient.queuePath(project, location, queue);
     const url = `https://${location}-${project}.cloudfunctions.net/initLotterySolver`;
-    // const url =
-    //   'https://europe-west2-randottery-dev.cloudfunctions.net/authTest';
     const task = {
       httpRequest: {
         httpMethod: 'POST',
