@@ -69,7 +69,7 @@ const Lottery: React.FC<LotteryProps> = (props) => {
             htmlType="button"
             danger
             onClick={() => {
-              history.goBack();
+              history.push('/');
             }}
           >
             Go back
