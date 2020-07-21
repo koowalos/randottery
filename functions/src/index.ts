@@ -15,17 +15,19 @@ const serviceAccountEmail = 'cloudtask@randottery-dev.iam.gserviceaccount.com';
 export const addToTaskQueue = functions
   .region(location)
   .firestore.document('/lotteries/{documentId}')
-  .onCreate((snap, context) => {
+  .onCreate(async (snap, context) => {
     functions.logger.log('Changing status to ready', context.params.documentId);
     const endDate = snap.data().endDate;
     // const project = 'randottery';
     const queue = 'firestore-ttl';
     const tasksClient = new CloudTasksClient();
     const queuePath: string = tasksClient.queuePath(project, location, queue);
-    const url = `https://${location}-${project}.cloudfunctions.net/initLotterySolver?id=${context.params.documentId}`;
+    // const url = `https://${location}-${project}.cloudfunctions.net/initLotterySolver?id=${context.params.documentId}`;
+    const url =
+      'https://europe-west2-randottery-dev.cloudfunctions.net/authTest';
     const task = {
       httpRequest: {
-        httpMethod: 'POST',
+        httpMethod: 'GET',
         url,
         oidcToken: {
           serviceAccountEmail,
@@ -48,10 +50,13 @@ export const addToTaskQueue = functions
     //     });
     //   });
 
-    return tasksClient.createTask({
+    const [response] = await tasksClient.createTask({
       parent: queuePath,
       task,
     });
+    functions.logger.info('Task:', response);
+    const update = { taskName: response.name };
+    await snap.ref.update(update);
   });
 
 export const initLotterySolver = functions
@@ -100,4 +105,51 @@ export const initLotterySolver = functions
       res.status(400).json({ message: `Something is wrong`, err });
       return;
     }
+  });
+
+export const createHttpTaskWithToken = functions
+  .region(location)
+  .https.onRequest(async (req, res) => {
+    const client = new CloudTasksClient();
+    const queue = 'firestore-ttl';
+    const payload = {
+      id: Date.now(),
+    };
+    const parent = client.queuePath(project, location, queue);
+
+    const task: any = {
+      httpRequest: {
+        httpMethod: 'POST',
+        url: 'https://europe-west2-randottery-dev.cloudfunctions.net/authTest',
+        body: Buffer.from(JSON.stringify(payload)).toString('base64'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        oidcToken: {
+          serviceAccountEmail:
+            'cloudtask2@randottery-dev.iam.gserviceaccount.com',
+        },
+      },
+    };
+
+    task.scheduleTime = {
+      seconds: Date.now() / 1000 + 3600,
+    };
+
+    console.log('Sending task:');
+    console.log(task);
+    // Send create task request.
+    const request = { parent, task };
+    const [response] = await client.createTask(request);
+    const name = response.name;
+    res.status(200).json({ message: `Created task ${name}`, response });
+    // [END cloud_tasks_create_http_task_with_token]
+  });
+
+export const authTest = functions
+  .region(location)
+  .https.onRequest(async (req, res) => {
+    const { id } = req.body;
+    functions.logger.log({ message: `ok`, id });
+    res.status(200).json({ message: `ok`, id });
   });
