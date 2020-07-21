@@ -21,13 +21,12 @@ export const addToTaskQueue = functions
     };
     functions.logger.log('Changing status to ready', payload);
     const endDate = snap.data().endDate;
-    // const project = 'randottery';
     const queue = 'firestore-ttl';
     const tasksClient = new CloudTasksClient();
     const queuePath: string = tasksClient.queuePath(project, location, queue);
-    // const url = `https://${location}-${project}.cloudfunctions.net/initLotterySolver?id=${context.params.documentId}`;
-    const url =
-      'https://europe-west2-randottery-dev.cloudfunctions.net/authTest';
+    const url = `https://${location}-${project}.cloudfunctions.net/initLotterySolver`;
+    // const url =
+    //   'https://europe-west2-randottery-dev.cloudfunctions.net/authTest';
     const task = {
       httpRequest: {
         httpMethod: 'POST',
@@ -45,18 +44,6 @@ export const addToTaskQueue = functions
       },
     };
 
-    // You must return a Promise when performing asynchronous tasks inside a Functions such as
-    // writing to Cloud Firestore.
-    // Setting an 'uppercase' field in Cloud Firestore document returns a Promise.
-    // return snap.ref
-    //   .set({ taskId: '32434534456' }, { merge: true })
-    //   .then((res) => {
-    //     return tasksClient.createTask({
-    //       parent: queuePath,
-    //       task,
-    //     });
-    //   });
-
     const [response] = await tasksClient.createTask({
       parent: queuePath,
       task,
@@ -69,55 +56,41 @@ export const addToTaskQueue = functions
 export const initLotterySolver = functions
   .region(location)
   .https.onRequest(async (req, res) => {
-    const lotteryId: any = req.query.id;
-    if (!lotteryId) {
+    const { id } = req.body;
+
+    if (!id) {
       functions.logger.error('Lottery ID missing');
-      res.status(400).json({ message: `Lottery ID missing` });
-      return;
+      return res.status(400).json({ message: `Lottery ID missing` });
     }
-    // Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    const lotteryRef = admin.firestore().collection('lotteries').doc(lotteryId);
+
+    const lotteryRef = admin.firestore().collection('lotteries').doc(id);
     const doc = await lotteryRef.get();
 
     if (!doc.exists) {
       functions.logger.error('Lottery does not exist');
-      res.status(400).json({ message: `Lottery does not exist` });
-      return;
+      return res.status(400).json({ message: `Lottery does not exist` });
     }
 
     const { participants, numberOfWinners, winners, status }: any = doc.data();
+
     if (winners || status !== 'active') {
       functions.logger.error('Lottery already closed');
-      res.status(400).json({ message: `Lottery already closed` });
-      return;
+      return res.status(400).json({ message: `Lottery already closed` });
     }
+
     const winnersResult = _.chain(participants)
       .shuffle()
       .slice(0, numberOfWinners)
       .value();
 
-    try {
-      await lotteryRef.set(
-        {
-          winners: winnersResult,
-          taskId: admin.firestore.FieldValue.delete(),
-          status: 'ended',
-        },
-        { merge: true }
-      );
-      res.status(200).json({ message: `ok`, winners: winnersResult });
-      return;
-    } catch (err) {
-      functions.logger.error('Something is wrong', err);
-      res.status(400).json({ message: `Something is wrong`, err });
-      return;
-    }
-  });
+    await lotteryRef.set(
+      {
+        winners: winnersResult,
+        taskId: admin.firestore.FieldValue.delete(),
+        status: 'ended',
+      },
+      { merge: true }
+    );
 
-export const authTest = functions
-  .region(location)
-  .https.onRequest(async (req, res) => {
-    const { id } = req.body;
-    functions.logger.log({ message: `ok`, id });
-    res.status(200).json({ message: `ok`, id });
+    return res.status(200).json({ message: `ok`, winners: winnersResult });
   });
