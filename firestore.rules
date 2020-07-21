@@ -34,8 +34,15 @@ service cloud.firestore {
         request.auth.uid == request.resource.data.owner &&
         // - status has to be active
         request.resource.data.status == 'active' &&
+        // endDate is in future
+        request.time < request.resource.data.endDate &&
         // - participants must be empty
-        request.resource.data.participants.size() == 0;
+        request.resource.data.participants.size() == 0 &&
+        // - maxParticipants more than one
+        (request.resource.data.maxParticipants == 0 || request.resource.data.maxParticipants > 1) &&
+        // - maxParticipants must be bigger than numberOfWinners
+        (request.resource.data.maxParticipants == 0 || request.resource.data.maxParticipants > request.resource.data.numberOfWinners)
+        
       allow update: if
         isSignedIn() &&
         // only allow modify active lotteries
@@ -44,10 +51,6 @@ service cloud.firestore {
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(["participants"]) &&
         // deny join full lotteries
         (resource.data.participants.size() < resource.data.maxParticipants || resource.data.participants.size() == 0)  &&
-          // {/* TODO: validation participants > winners */}
-          // TODO: END DATE > NOW
-          //TODO: max >= 0, winners > 0
-
         // only allow toggle logged user into array
         (
           request.resource.data.participants.toSet().difference(resource.data.participants.toSet()) == [request.auth.uid].toSet() ||

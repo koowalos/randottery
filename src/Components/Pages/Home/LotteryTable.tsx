@@ -11,7 +11,10 @@ interface LotteryTableProps extends RouteComponentProps<any> {
     name: string;
     id: string;
     participants: string;
-    endDate: string;
+    endDate: {
+      seconds: number;
+      nanoseconds: number;
+    };
   }>;
 }
 
@@ -55,7 +58,7 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
       title: 'End date',
       dataIndex: 'endDate',
       width: 225,
-      render: (endDate) => timestampToDate(endDate),
+      render: (endDate) => timestampToDate(endDate.seconds),
     },
     {
       title: 'Action',

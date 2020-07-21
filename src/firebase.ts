@@ -2,7 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/database';
-import history from './history';
+// import history from './history';
+// import axios from 'axios';
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -19,6 +20,16 @@ firebase.initializeApp(config);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const db = firestore;
+
+if (
+  process.env.REACT_APP_LOCAL_FIREBASE === 'true' &&
+  window.location.hostname === 'localhost'
+) {
+  db.settings({
+    host: 'localhost:8080',
+    ssl: false,
+  });
+}
 
 export const generateUserDocument = async (user, additionalData = {}) => {
   if (!user) return null;
@@ -98,15 +109,45 @@ export const signOut = () => {
 export const createLottery = (data, uid) => {
   console.log('createLottery', data);
 
+  // if (auth.currentUser) {
+  //   auth.currentUser
+  //     .getIdToken(true)
+  //     .then(function (idToken) {
+  //       const config = {
+  //         headers: { Authorization: `Bearer ${idToken}` },
+  //       };
+
+  //       // Send token to your backend via HTTPS
+  //       axios
+  //         .post(
+  //           'http://localhost:5001/randomizer-ae71a/us-central1/createLottery',
+  //           data,
+  //           config
+  //         )
+  //         .then((res) => {
+  //           console.log(res);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+
+  //       console.log({ idToken });
+  //     })
+  //     .catch(function (error) {
+  //       // Handle error
+  //     });
+  // }
+
   db.collection('lotteries')
     .add({
+      ...data,
       status: 'active',
       owner: uid,
       participants: [],
-      ...data,
+      endDate: firebase.firestore.Timestamp.fromMillis(data.endDate),
     })
     .then(function (res) {
-      history.push(`/lottery/${res.id}`);
+      // history.push(`/lottery/${res.id}`);
       console.log('Document successfully written!');
     })
     .catch(function (error) {

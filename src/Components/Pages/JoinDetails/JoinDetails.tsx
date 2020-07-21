@@ -73,7 +73,7 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
         <Text type="secondary" style={{ marginTop: 30 }}>
           {endWhenFull
             ? `This lottery will start immediately when maximum number of participants is reached`
-            : `This lottery will end on: ${timestampToDate(endDate)}`}
+            : `This lottery will end on: ${timestampToDate(endDate.seconds)}`}
         </Text>
       </div>
       <Form
