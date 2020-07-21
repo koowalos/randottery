@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Redirect } from 'react-router-dom';
 import { useParams, RouteComponentProps } from 'react-router-dom';
 import { Typography, Form, Button } from 'antd';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase';
-
+import { UserContext } from '../../../Providers/UserProvider';
 import { timestampToDate } from '../../../helpers';
+import { deleteLottery } from '../../../firebase';
 
 const { Title, Text } = Typography;
 interface LotteryProps extends RouteComponentProps<any> {}
 
 const Lottery: React.FC<LotteryProps> = (props) => {
+  const userData: any = useContext(UserContext);
   const { history } = props;
   let { id } = useParams();
 
@@ -25,7 +28,12 @@ const Lottery: React.FC<LotteryProps> = (props) => {
     return <div>LOADING...</div>;
   }
 
+  if (!values.data()) {
+    return <Redirect to="/" />;
+  }
+
   const {
+    owner,
     name,
     prize,
     participants,
@@ -33,7 +41,28 @@ const Lottery: React.FC<LotteryProps> = (props) => {
     endDate,
     endWhenFull,
   } = values.data();
-  const { id: dataId } = values;
+
+  const renderDelete = () => {
+    console.log({ owner, userData });
+    if (participants.length === 0 && owner === userData.user.uid) {
+      return (
+        <>
+          {' '}
+          <Button
+            type="primary"
+            htmlType="button"
+            danger
+            onClick={() => {
+              deleteLottery(id);
+            }}
+          >
+            Delete
+          </Button>
+        </>
+      );
+    }
+    return null;
+  };
 
   return (
     <div>
@@ -41,7 +70,7 @@ const Lottery: React.FC<LotteryProps> = (props) => {
         <Title style={{ marginTop: 70, marginBottom: 5 }}>{name}</Title>
         <Text type="secondary">
           ID: {``}
-          {dataId}
+          {id}
         </Text>
         {prize ? (
           <Title level={3} style={{ marginTop: 30 }}>
@@ -67,13 +96,13 @@ const Lottery: React.FC<LotteryProps> = (props) => {
           <Button
             type="primary"
             htmlType="button"
-            danger
             onClick={() => {
               history.push('/');
             }}
           >
             Go back
           </Button>
+          {renderDelete()}
         </Form.Item>
       </Form>
     </div>

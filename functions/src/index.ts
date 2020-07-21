@@ -49,6 +49,38 @@ export const addToTaskQueue = functions
     await snap.ref.update(update);
   });
 
+export const lotteryOnUpdate = functions
+  .region(location)
+  .firestore.document('/lotteries/{documentId}')
+  .onUpdate(async (change) => {
+    // const before = change.before.data();
+    const after = change.after.data();
+
+    const taskName = after.taskName;
+
+    const endWhenFull = after.endWhenFull;
+    const participants = after.participants;
+    const maxParticipants = after.maxParticipants;
+
+    if (
+      endWhenFull &&
+      maxParticipants > 0 &&
+      maxParticipants === participants.length
+    ) {
+      const tasksClient = new CloudTasksClient();
+      await tasksClient.runTask({ name: taskName });
+    }
+  });
+
+export const lotteryOnDelete = functions
+  .region(location)
+  .firestore.document('/lotteries/{documentId}')
+  .onDelete(async (snap) => {
+    const tasksClient = new CloudTasksClient();
+    const taskName = snap.data().taskName;
+    await tasksClient.deleteTask({ name: taskName });
+  });
+
 export const initLotterySolver = functions
   .region(location)
   .https.onRequest(async (req, res) => {
