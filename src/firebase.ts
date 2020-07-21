@@ -3,6 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/database';
 import history from './history';
+import { message } from 'antd';
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -125,13 +126,21 @@ export const createLottery = (data, uid) => {
     });
 };
 
-export const deleteLottery = (id) => {
-  return 'deleteLottery';
+export const deleteLottery = (lotteryId) => {
+  const currentLottery = db.collection('lotteries').doc(lotteryId);
+  currentLottery
+    .delete()
+    .then((res) => {
+      message.success(`Delete complete`, 1);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 export const joinLottery = (lotteryId, uid) => {
   console.log({ lotteryId, uid });
-  var currentLottery = db.collection('lotteries').doc(lotteryId);
+  const currentLottery = db.collection('lotteries').doc(lotteryId);
 
   currentLottery
     .update({

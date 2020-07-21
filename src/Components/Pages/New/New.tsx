@@ -155,6 +155,7 @@ const New: React.FC<NewProps> = (props) => {
           name="endWhenFull"
           initialValue={false}
         >
+          {/* TODO: Should only let it on when maxParticipants > 0 */}
           <Checkbox defaultChecked={false}>
             Start immediately with max participants
           </Checkbox>

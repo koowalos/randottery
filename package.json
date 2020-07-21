@@ -35,7 +35,10 @@
     "emulators": "firebase emulators:start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "craco build && firebase deploy",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:frontend": "craco build && firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": "react-app"
