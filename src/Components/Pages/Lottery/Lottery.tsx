@@ -43,7 +43,6 @@ const Lottery: React.FC<LotteryProps> = (props) => {
   } = values.data();
 
   const renderDelete = () => {
-    console.log({ owner, userData });
     if (participants.length === 0 && owner === userData.user.uid) {
       return (
         <>

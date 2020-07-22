@@ -18,6 +18,9 @@ const SignIn: React.FC<SignInProps> = (props) => {
       case 'auth/user-not-found':
         form.validateFields(['email']);
         break;
+      case 'auth/wrong-password':
+        form.validateFields(['password']);
+        break;
       default:
         break;
     }
@@ -28,7 +31,6 @@ const SignIn: React.FC<SignInProps> = (props) => {
     setLoading(true);
     const succeed = () => {
       setLoading(false);
-      console.log('dobre');
     };
     const fail = (error) => {
       setLoading(false);
@@ -67,6 +69,7 @@ const SignIn: React.FC<SignInProps> = (props) => {
               () => ({
                 validator() {
                   if (error.code === 'auth/user-not-found') {
+                    setError(false);
                     return Promise.reject('User not found!');
                   }
                   return Promise.resolve();
@@ -81,7 +84,18 @@ const SignIn: React.FC<SignInProps> = (props) => {
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
+            rules={[
+              { required: true, message: 'Please input your Password!' },
+              () => ({
+                validator() {
+                  if (error.code === 'auth/wrong-password') {
+                    setError(false);
+                    return Promise.reject('The password is invalid!');
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
           >
             <Input
               prefix={<LockOutlined className="site-form-item-icon" />}

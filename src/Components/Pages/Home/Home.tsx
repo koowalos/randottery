@@ -61,7 +61,7 @@ const Home: React.FC<HomeProps> = (props) => {
             <TabPane
               tab={
                 <>
-                  In progress{' '}
+                  Active{' '}
                   <span style={{ color: '#ccc' }}>({joinedActive.length})</span>
                 </>
               }
@@ -99,7 +99,7 @@ const Home: React.FC<HomeProps> = (props) => {
             <TabPane
               tab={
                 <>
-                  In progress{' '}
+                  Active{' '}
                   <span style={{ color: '#ccc' }}>({myActive.length})</span>
                 </>
               }

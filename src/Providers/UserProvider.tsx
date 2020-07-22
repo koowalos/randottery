@@ -15,7 +15,6 @@ const UserProvider: React.FC = (props) => {
   useEffect(() => {
     auth.onAuthStateChanged(async (userAuth) => {
       const user = await generateUserDocument(userAuth);
-      console.log('auth.onAuthStateChanged');
       setUser({
         loading: false,
         user,

@@ -10,7 +10,6 @@ export const LotteryContext = createContext({
 });
 
 const LotteryProvider: React.FC = (props) => {
-  console.log('LotteryProvider RENDER');
   const userData: any = useContext(UserContext);
   const { user } = userData;
 

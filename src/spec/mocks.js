@@ -9,22 +9,18 @@ export const mockData = {
   'users/ponciusz': {
     displayName: 'Kamil Albrycht',
     email: 'ponciusz@gmail.com',
-    photoURL: null,
   },
   'users/kowal': {
     displayName: 'Pawel Kownacki',
     email: 'koowal@gmail.com',
-    photoURL: null,
   },
   'users/kula': {
     displayName: 'Kula Kulson',
     email: 'kula@gmail.com',
-    photoURL: null,
   },
   'users/karni': {
     displayName: 'Karnol Kalrnoliusz',
     email: 'karni@gmail.com',
-    photoURL: null,
   },
   'lotteries/ponciusz_a': {
     endDate: {

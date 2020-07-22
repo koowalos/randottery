@@ -21,12 +21,9 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   );
 
   const [form] = Form.useForm();
-  console.log(id);
 
   const onFinish = (values) => {
     joinLottery(id, userData.user.uid);
-
-    console.log('Received values of form: ', values);
   };
 
   if (error) {
@@ -36,9 +33,6 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   if (loading || !values) {
     return <div>LOADING...</div>;
   }
-
-  console.log(values.data());
-
   const {
     name,
     prize,
