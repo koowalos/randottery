@@ -5,12 +5,15 @@ import { Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import history from './history';
 import UserProvider from './Providers/UserProvider';
+import LotteryProvider from './Providers/LotteryProvider';
 
 ReactDOM.render(
   <UserProvider>
-    <Router history={history}>
-      <App />
-    </Router>
+    <LotteryProvider>
+      <Router history={history}>
+        <App />
+      </Router>
+    </LotteryProvider>
   </UserProvider>,
   document.getElementById('root')
 );
