@@ -38,12 +38,11 @@ export const generateUserDocument = async (user, additionalData = {}) => {
   const snapshot = await userRef.get();
 
   if (!snapshot.exists) {
-    const { email, displayName, photoURL } = user;
+    const { email, displayName } = user;
     try {
       await userRef.set({
         displayName,
         email,
-        photoURL,
         ...additionalData,
       });
     } catch (error) {
@@ -82,7 +81,7 @@ export const signInWithEmailAndPasswordHandler = (
 };
 
 export const createUserWithEmailAndPasswordHandler = async (
-  { email, password },
+  { email, password, displayName },
   onSucceed,
   onFail
 ) => {
@@ -90,7 +89,7 @@ export const createUserWithEmailAndPasswordHandler = async (
     const { user } = await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password);
-    generateUserDocument(user, { displayName: 'My default Name' });
+    generateUserDocument(user, { displayName });
     await onSucceed();
   } catch (error) {
     console.log(error);

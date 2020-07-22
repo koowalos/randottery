@@ -35,7 +35,6 @@ const Register: React.FC<RegisterProps> = (props) => {
     setLoading(true);
     const succeed = () => {
       setLoading(false);
-      console.log('dobre');
     };
     const fail = (error) => {
       setLoading(false);
@@ -44,6 +43,7 @@ const Register: React.FC<RegisterProps> = (props) => {
     const loginData = {
       email: values.email,
       password: values.password,
+      displayName: values.displayName,
     };
 
     createUserWithEmailAndPasswordHandler(loginData, succeed, fail);
@@ -75,6 +75,7 @@ const Register: React.FC<RegisterProps> = (props) => {
               () => ({
                 validator() {
                   if (error.code === 'auth/email-already-in-use') {
+                    setError(false);
                     return Promise.reject(error.message);
                   }
                   return Promise.resolve();
@@ -97,6 +98,7 @@ const Register: React.FC<RegisterProps> = (props) => {
               () => ({
                 validator() {
                   if (error.code === 'auth/weak-password') {
+                    setError(false);
                     return Promise.reject(error.message);
                   }
                   return Promise.resolve();

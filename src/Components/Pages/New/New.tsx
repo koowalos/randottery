@@ -32,7 +32,6 @@ const New: React.FC<NewProps> = (props) => {
       ...fieldsValue,
       endDate,
     };
-    console.log(values);
     createLottery(
       {
         name: values.lotteryName,
