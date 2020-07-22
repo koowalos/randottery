@@ -154,8 +154,20 @@ const New: React.FC<NewProps> = (props) => {
           valuePropName="checked"
           name="endWhenFull"
           initialValue={false}
+          rules={[
+            () => ({
+              validator(rule, value) {
+                const maxParticipants = form.getFieldValue('maxParticipants');
+                if (maxParticipants === 0 && value === true) {
+                  return Promise.reject(
+                    'Cannot be selected for unlimited number of participants'
+                  );
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
         >
-          {/* TODO: Should only let it on when maxParticipants > 0 */}
           <Checkbox defaultChecked={false}>
             Start immediately with max participants
           </Checkbox>

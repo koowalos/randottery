@@ -53,12 +53,13 @@ const Register: React.FC<RegisterProps> = (props) => {
   }
   return (
     <Row justify="center" align="middle" style={{ marginTop: 70 }}>
-      <Col span={8}>
+      <Col span={24}>
         <Form
           form={form}
           name="register"
           onFinish={onFinish}
           scrollToFirstError
+          style={{ margin: 'auto', maxWidth: 420 }}
         >
           <Form.Item
             name="email"
