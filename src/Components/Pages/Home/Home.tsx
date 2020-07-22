@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
-import { Tabs, Row, Col, Button, Typography, Badge } from 'antd';
+import { Tabs, Row, Col, Button, Typography } from 'antd';
 import LotteryTable from './LotteryTable';
 import { RouteComponentProps } from 'react-router-dom';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { firestore } from '../../../firebase';
 import { UserContext } from '../../../Providers/UserProvider';
+import { LotteryContext } from '../../../Providers/LotteryProvider';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -14,51 +13,33 @@ interface HomeProps extends RouteComponentProps<any> {
 }
 
 const Home: React.FC<HomeProps> = (props) => {
+  console.log('Home RENDER');
   const userData: any = useContext(UserContext);
+  const lotteriesData: any = useContext(LotteryContext);
 
-  const [myLotteries, myLoading, myError] = useCollection(
-    firestore.collection('lotteries').where('owner', '==', userData.user.uid)
-  );
-
-  const [joinedLotteries, joinedLoading, joinedError] = useCollection(
-    firestore
-      .collection('lotteries')
-      .where('participants', 'array-contains', userData.user.uid)
-  );
-
-  if (myError) {
-    return <div>ERROR: {myError.message}</div>;
-  }
-  if (joinedError) {
-    return <div>ERROR: {joinedError.message}</div>;
+  if (lotteriesData.error) {
+    return <div>ERROR: {lotteriesData.error.message}</div>;
   }
 
-  if (myLoading || !myLotteries) {
+  if (lotteriesData.loading || !lotteriesData.lotteries) {
     return <div>LOADING...</div>;
   }
 
-  if (joinedLoading || !joinedLotteries) {
-    return <div>LOADING...</div>;
-  }
-
-  const myData: any = [];
-  const joinedData: any = [];
-
-  myLotteries.docs.forEach((doc) => {
-    myData.push({ ...doc.data(), key: doc.id, id: doc.id });
-  });
-
-  joinedLotteries.docs.forEach((doc) => {
-    joinedData.push({ ...doc.data(), key: doc.id, id: doc.id });
-  });
-
-  const joinedActive = joinedData.filter((o) => o.status === 'active');
-  const joinedEnded = joinedData.filter(
-    (o) => o.status === 'ended' || o.status === 'cancelled'
+  const joinedActive = lotteriesData.lotteries.filter(
+    (o) => o.status === 'active' && o.owner !== userData.user.uid
   );
-  const myActive = myData.filter((o) => o.status === 'active');
-  const myEnded = myData.filter(
-    (o) => o.status === 'ended' || o.status === 'cancelled'
+  const joinedEnded = lotteriesData.lotteries.filter(
+    (o) =>
+      (o.status === 'ended' || o.status === 'cancelled') &&
+      o.owner !== userData.user.uid
+  );
+  const myActive = lotteriesData.lotteries.filter(
+    (o) => o.status === 'active' && o.owner === userData.user.uid
+  );
+  const myEnded = lotteriesData.lotteries.filter(
+    (o) =>
+      (o.status === 'ended' || o.status === 'cancelled') &&
+      o.owner === userData.user.uid
   );
 
   return (
