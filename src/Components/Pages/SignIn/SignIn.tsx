@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
-import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { signInWithEmailAndPasswordHandler } from '../../../firebase';
 import { UserContext } from '../../../Providers/UserProvider';
@@ -46,13 +46,14 @@ const SignIn: React.FC<SignInProps> = (props) => {
   }
   return (
     <Row justify="space-around" align="middle" style={{ marginTop: 70 }}>
-      <Col span={8}>
+      <Col span={24}>
         <Form
           form={form}
           name="normal_login"
           className="login-form"
           initialValues={{ remember: true }}
           onFinish={onFinish}
+          style={{ margin: 'auto', maxWidth: 420 }}
         >
           <Form.Item
             name="email"
@@ -89,10 +90,6 @@ const SignIn: React.FC<SignInProps> = (props) => {
             />
           </Form.Item>
           <Form.Item style={{ textAlign: 'center' }}>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
             <Link to="/password-reset">Forgot password</Link>
           </Form.Item>
 

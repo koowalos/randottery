@@ -13,7 +13,6 @@ interface HomeProps extends RouteComponentProps<any> {
 }
 
 const Home: React.FC<HomeProps> = (props) => {
-  console.log('Home RENDER');
   const userData: any = useContext(UserContext);
   const lotteriesData: any = useContext(LotteryContext);
 
