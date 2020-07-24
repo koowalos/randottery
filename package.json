@@ -28,7 +28,9 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "typescript": "~3.7.2",
-    "uuid": "^8.1.0"
+    "uuid": "^8.1.0",
+    "cypress": "^4.4.1",
+    "cypress-cucumber-preprocessor": "^2.3.1"
   },
   "scripts": {
     "start": "craco start",
@@ -38,7 +40,11 @@
     "eject": "react-scripts eject",
     "deploy": "craco build && firebase deploy",
     "deploy:functions": "firebase deploy --only functions",
-    "deploy:frontend": "craco build && firebase deploy --only hosting"
+    "deploy:frontend": "craco build && firebase deploy --only hosting",
+    "test-e2e": "./node_modules/.bin/cypress run --headed"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
   },
   "eslintConfig": {
     "extends": "react-app"
