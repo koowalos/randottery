@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g id="Layer1">
+        <circle cx="100" cy="100" r="96.114" style="fill:rgb(131,209,248);stroke:rgb(62,62,62);stroke-width:6px;"/>
+        <path d="M160.92,83.564C151.848,83.564 144.484,90.929 144.484,100C144.484,109.071 151.848,116.436 160.92,116.436L160.92,140.793L39.08,140.793L39.08,116.436C48.152,116.436 55.516,109.071 55.516,100C55.516,90.929 48.152,83.564 39.08,83.564L39.08,59.207L160.92,59.207L160.92,83.564Z" style="fill:rgb(255,230,182);stroke:rgb(62,62,62);stroke-width:6px;"/>
+        <g transform="matrix(1,0,0,1,31.9432,0)">
+            <path d="M100,59.207L100,140.793" style="fill:none;stroke:rgb(62,62,62);stroke-width:6px;stroke-dasharray:12,12,0,0;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-7.18663,38.1634)">
+            <text x="72.748px" y="92.189px" style="font-family:'Noteworthy-Bold', 'Noteworthy';font-weight:700;font-size:71px;fill:rgb(62,62,62);">R</text>
+        </g>
+    </g>
+</svg>
