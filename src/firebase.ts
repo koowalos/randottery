@@ -43,6 +43,7 @@ export const generateUserDocument = async (user, additionalData = {}) => {
       await userRef.set({
         displayName,
         email,
+        uid: user.uid,
         ...additionalData,
       });
     } catch (error) {
@@ -151,8 +152,4 @@ export const joinLottery = (lotteryId, uid) => {
     .catch(function (error) {
       console.error('Error writing document: ', error);
     });
-};
-
-export const leaveLottery = (id) => {
-  return 'leaveLottery';
 };

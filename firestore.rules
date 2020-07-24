@@ -19,9 +19,11 @@ service cloud.firestore {
       allow read: if 
         isSignedIn() && 
         user == request.auth.uid;
-      allow write: if 
+      allow create: if 
         isSignedIn() &&
         user == request.auth.uid;
+      allow update: if false;
+      allow delete: if false;
     }
 
     match /lotteries/{lottery} {

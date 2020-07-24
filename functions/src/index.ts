@@ -96,6 +96,7 @@ export const initLotterySolver = functions
 
     if (!doc.exists) {
       functions.logger.error('Lottery does not exist');
+
       return res.status(400).json({ message: `Lottery does not exist` });
     }
 
@@ -106,14 +107,37 @@ export const initLotterySolver = functions
       return res.status(400).json({ message: `Lottery already closed` });
     }
 
-    const winnersResult = _.chain(participants)
-      .shuffle()
-      .slice(0, numberOfWinners)
-      .value();
+    const winnersResult = _.slice(_.shuffle(participants), 0, numberOfWinners);
+    functions.logger.error('nie ma lipy', { winnersResult });
 
+    const usersRef = admin.firestore().collection('users');
+    const lotteryWinner = await usersRef
+      .where('uid', 'in', winnersResult)
+      .get();
+    functions.logger.error({ lotteryWinner });
+
+    // TODO: fix empty lottery crash
+
+    let winnerDetails: any = [];
+
+    if (lotteryWinner.empty) {
+      functions.logger.error('No winners');
+    } else {
+      functions.logger.info('else');
+      lotteryWinner.forEach((user: any) => {
+        const userData = user.data();
+        functions.logger.info({ userData });
+
+        winnerDetails.push({
+          displayName: userData.displayName,
+          uid: userData.uid,
+        });
+      });
+    }
+    functions.logger.info({ winnerDetails });
     await lotteryRef.set(
       {
-        winners: winnersResult,
+        winners: winnerDetails,
         taskId: admin.firestore.FieldValue.delete(),
         status: 'ended',
       },

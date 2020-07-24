@@ -40,6 +40,8 @@ const Lottery: React.FC<LotteryProps> = (props) => {
     maxParticipants,
     endDate,
     endWhenFull,
+    status,
+    winners,
   } = values.data();
 
   const renderDelete = () => {
@@ -63,7 +65,66 @@ const Lottery: React.FC<LotteryProps> = (props) => {
     return null;
   };
 
-  return (
+  const sortWinners = (winners) => {
+    console.log(winners);
+    return winners.map((el) => <div key={el.uid}>{el.displayName}</div>);
+  };
+
+  const winnerMessage = () => {
+    switch (winners.length) {
+      case 0:
+        return <div>There were no winners.</div>;
+      case 1:
+        return <div>The winner is: {sortWinners(winners)}</div>;
+      default:
+        return <div>The winners are: {sortWinners(winners)}</div>;
+    }
+  };
+
+  return status === 'ended' ? (
+    <div>
+      <div className="details-wrapper">
+        <Title style={{ marginTop: 70, marginBottom: 5 }}>{name}</Title>
+        <Text type="secondary">
+          ID: {``}
+          {id}
+        </Text>
+        {prize ? (
+          <Title level={3} style={{ marginTop: 30 }}>
+            Prize to be won: {``} {prize}
+          </Title>
+        ) : (
+          <Title level={3} style={{ marginTop: 30 }}>
+            No prize has been set for this lottery
+          </Title>
+        )}
+        <Title level={4} style={{ marginTop: 50 }}>
+          Participants: {participants.length}
+          {maxParticipants !== 0 ? `/${maxParticipants}` : null}
+        </Title>
+        <Text type="secondary" style={{ marginTop: 30 }}>
+          {`This lottery ended on: ${timestampToDate(endDate.seconds)}`}
+        </Text>
+        <br />
+        <Title level={2} style={{ marginTop: 30 }}>
+          {winnerMessage()}
+        </Title>
+      </div>
+      <Form>
+        <Form.Item style={{ marginTop: 30, textAlign: 'center' }}>
+          <Button
+            type="primary"
+            htmlType="button"
+            onClick={() => {
+              history.push('/');
+            }}
+          >
+            Go back
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  ) : (
     <div>
       <div className="details-wrapper">
         <Title style={{ marginTop: 70, marginBottom: 5 }}>{name}</Title>
