@@ -51,8 +51,7 @@ const SignIn: React.FC<SignInProps> = () => {
       <Col span={24}>
         <Form
           form={form}
-          name="normal_login"
-          className="login-form"
+          name="signInForm"
           initialValues={{ remember: true }}
           onFinish={onFinish}
           style={{ margin: 'auto', maxWidth: 420 }}
@@ -101,7 +100,7 @@ const SignIn: React.FC<SignInProps> = () => {
           </Form.Item>
 
           <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
-            <Button htmlType="submit" className="login-form-button" type="primary" loading={loading}>
+            <Button id='signInForm_logIn' htmlType="submit" type="primary" loading={loading}>
               Log in
             </Button>
             <div>

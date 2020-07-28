@@ -1,3 +1,16 @@
 {
-    "testFiles": "**/*.{feature,features}"
+  "video": false,
+  "defaultCommandTimeout": 5000,
+  "responseTimeout": 5000,
+  "screenshotOnRunFailure": false,
+  "ignoreTestFiles": [
+    "*.js",
+    "*.md"
+  ],
+  "testFiles": "**/*.{feature,features}",
+  "viewportWidth": 1200,
+  "viewportHeight": 1200,
+  "env": {
+    "url": "https://randottery-dev.web.app/#/"
+  }
 }

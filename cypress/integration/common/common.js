@@ -1,4 +1,4 @@
-import { Given } from 'cypress-cucumber-preprocessor/steps';
+import { Given, Then } from 'cypress-cucumber-preprocessor/steps';
 
 beforeEach(() => {
   cy.viewport(1900, 1200);
@@ -7,18 +7,17 @@ beforeEach(() => {
 
 Given('Home page has been loaded', () => {
   cy.visit('/');
-  cy.wait(3000);
 });
 
-Given('I visit the following URL: {string}', (url) => {
+Given('I visit the following URL: {string}', url => {
   cy.visit(url);
 });
 
-Then('I wait {string} ms', (time) => {
+Then('I wait {string} ms', time => {
   cy.wait(Number(time));
 });
 
-Then('I click a link: {string}', (text) => {
+Then('I click a link: {string}', text => {
   // text variable irepresents link's name
   cy.get('a')
     .contains(text)
@@ -27,10 +26,10 @@ Then('I click a link: {string}', (text) => {
     .click();
 });
 
-Then('I should see {string} in URL', (urlPart) => {
+Then('I should see {string} in URL', urlPart => {
   cy.url().should('include', urlPart);
 });
 
-Then('I should see {string}', (text) => {
+Then('I should see {string}', text => {
   cy.contains(text);
 });
