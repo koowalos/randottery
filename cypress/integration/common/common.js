@@ -1,8 +1,7 @@
 import { Given, Then } from 'cypress-cucumber-preprocessor/steps';
 
-beforeEach(() => {
-  cy.viewport(1900, 1200);
-  cy.server();
+before(() => {
+  indexedDB.deleteDatabase('firebaseLocalStorageDb');
 });
 
 Given('Home page has been loaded', () => {
