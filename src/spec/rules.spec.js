@@ -1,16 +1,16 @@
 import {
   mockData,
   mockUserPonciusz,
-  // mockUserKowal,
   mockUserKula,
 } from './mocks';
-import firebase from 'firebase/app';
+
 import { setup, teardown } from './helpers';
+
+const firebase = require('firebase/app');
 
 const firebaseTimestamp = (seconds, subtract = false) => {
   const past = Date.now() - seconds * 1000;
   const future = Date.now() + seconds * 1000;
-
   return firebase.firestore.Timestamp.fromMillis(subtract ? past : future);
 };
 

@@ -1,4 +1,4 @@
-import firebase from '@firebase/testing';
+const firebase = require('@firebase/testing');
 
 expect.extend({
   async toAllow(x) {

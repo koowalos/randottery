@@ -1,5 +1,5 @@
-import firebase from '@firebase/testing';
-import fs from 'fs';
+const firebase = require('@firebase/testing');
+const fs = require('fs');
 
 const projectId = 'randottery-dev';
 // const projectId = `rules-spec-${Date.now()}`;
