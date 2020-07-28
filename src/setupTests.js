@@ -1,4 +1,4 @@
-const firebase = require('@firebase/testing');
+import firebase from '@firebase/testing';
 
 expect.extend({
   async toAllow(x) {
@@ -6,12 +6,12 @@ expect.extend({
     try {
       await firebase.assertSucceeds(x);
       pass = true;
-    } catch (err) {}
+    }
+    catch (err) { }
 
     return {
       pass,
-      message: () =>
-        'Expected Firebase operation to be allowed, but it was denied',
+      message: () => 'Expected Firebase operation to be allowed, but it was denied',
     };
   },
 });
@@ -22,11 +22,11 @@ expect.extend({
     try {
       await firebase.assertFails(x);
       pass = true;
-    } catch (err) {}
+    }
+    catch (err) { }
     return {
       pass,
-      message: () =>
-        'Expected Firebase operation to be denied, but it was allowed',
+      message: () => 'Expected Firebase operation to be denied, but it was allowed',
     };
   },
 });

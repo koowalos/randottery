@@ -5,12 +5,13 @@ import {
   mockUserKula,
 } from './mocks';
 import firebase from 'firebase/app';
-const { setup, teardown } = require('./helpers');
+import { setup, teardown } from './helpers';
 
 const firebaseTimestamp = (seconds, subtract = false) => {
-  return firebase.firestore.Timestamp.fromMillis(
-    subtract ? Date.now() - seconds * 1000 : Date.now() + seconds * 1000
-  );
+  const past = Date.now() - seconds * 1000;
+  const future = Date.now() + seconds * 1000;
+
+  return firebase.firestore.Timestamp.fromMillis(subtract ? past : future);
 };
 
 describe('Database rules', () => {
@@ -64,7 +65,7 @@ describe('Database rules', () => {
         participants: [],
         prize: 'banan',
         status: 'active',
-      })
+      }),
     ).toAllow();
   });
 
@@ -80,7 +81,7 @@ describe('Database rules', () => {
         participants: [],
         prize: 'banan',
         status: 'active',
-      })
+      }),
     ).toDeny();
   });
 
@@ -96,7 +97,7 @@ describe('Database rules', () => {
         participants: [],
         prize: 'banan',
         status: 'active',
-      })
+      }),
     ).toDeny();
   });
 
@@ -112,7 +113,7 @@ describe('Database rules', () => {
         participants: [],
         prize: 'banan',
         status: 'active',
-      })
+      }),
     ).toDeny();
   });
 
@@ -128,7 +129,7 @@ describe('Database rules', () => {
         participants: ['someUser'],
         prize: 'banan',
         status: 'active',
-      })
+      }),
     ).toDeny();
   });
 
@@ -144,7 +145,7 @@ describe('Database rules', () => {
         participants: [],
         prize: 'banan',
         status: 'active',
-      })
+      }),
     ).toDeny();
   });
 
@@ -152,7 +153,7 @@ describe('Database rules', () => {
     await expect(
       refLotteries.doc('kowal_b').update({
         participants: ['kula', 'ponciusz'],
-      })
+      }),
     ).toAllow();
   });
 
@@ -160,10 +161,10 @@ describe('Database rules', () => {
     await expect(
       refLotteriesKula.doc('ponciusz_d').update({
         participants: ['kowal', 'kula'],
-      })
+      }),
     ).toAllow();
 
-    await new Promise((resolve) => setTimeout(resolve, 300)); // wait for cloud function
+    await new Promise(resolve => setTimeout(resolve, 300)); // wait for cloud function
     const data = await refLotteries.doc('ponciusz_d').get();
     await expect(data).toAllow();
   });
@@ -172,7 +173,7 @@ describe('Database rules', () => {
     await expect(
       refLotteries.doc('kowal_b').update({
         participants: ['kula'],
-      })
+      }),
     ).toAllow();
   });
 
@@ -180,7 +181,7 @@ describe('Database rules', () => {
     await expect(
       refLotteries.doc('ponciusz_a').update({
         participants: ['kowal', 'kula', 'ponciusz'],
-      })
+      }),
     ).toDeny();
   });
 
@@ -188,7 +189,7 @@ describe('Database rules', () => {
     await expect(
       refLotteries.doc('kowal_c').update({
         participants: ['kula', 'karni', 'ponciusz'],
-      })
+      }),
     ).toDeny();
   });
 
@@ -196,7 +197,7 @@ describe('Database rules', () => {
     await expect(
       refLotteries.doc('kowal_c').update({
         participants: ['kula', 'ponciusz'],
-      })
+      }),
     ).toDeny();
   });
 

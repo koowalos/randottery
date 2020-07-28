@@ -8,14 +8,4 @@ import Error404 from './Error404';
 import SignIn from './SignIn';
 import Register from './Register';
 
-export {
-  Landing,
-  Home,
-  Join,
-  JoinDetails,
-  New,
-  Lottery,
-  Error404,
-  SignIn,
-  Register,
-};
+export { Landing, Home, Join, JoinDetails, New, Lottery, Error404, SignIn, Register };

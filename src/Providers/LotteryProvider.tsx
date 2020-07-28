@@ -9,7 +9,7 @@ export const LotteryContext = createContext({
   lotteries: null,
 });
 
-const LotteryProvider: React.FC = (props) => {
+const LotteryProvider: React.FC = props => {
   const userData: any = useContext(UserContext);
   const { user } = userData;
 
@@ -20,23 +20,21 @@ const LotteryProvider: React.FC = (props) => {
   });
 
   const [ownerLotteries, ownerLoading, ownerError] = useCollection(
-    firestore.collection('lotteries').where('owner', '==', user?.uid ?? 'null')
+    firestore.collection('lotteries').where('owner', '==', user?.uid ?? 'null'),
   );
 
   const [joinedLotteries, joinedLoading, joinedError] = useCollection(
-    firestore
-      .collection('lotteries')
-      .where('participants', 'array-contains', user?.uid ?? 'null')
+    firestore.collection('lotteries').where('participants', 'array-contains', user?.uid ?? 'null'),
   );
 
   useEffect(() => {
-    let data: any = [];
+    const data: any = [];
 
     if (ownerLotteries && joinedLotteries) {
-      ownerLotteries.docs.forEach((doc) => {
+      ownerLotteries.docs.forEach(doc => {
         data.push({ ...doc.data(), key: doc.id, id: doc.id });
       });
-      joinedLotteries.docs.forEach((doc) => {
+      joinedLotteries.docs.forEach(doc => {
         data.push({ ...doc.data(), key: doc.id, id: doc.id });
       });
     }
@@ -46,21 +44,9 @@ const LotteryProvider: React.FC = (props) => {
       loading: joinedLoading || ownerLoading,
       error: joinedError || ownerError,
     });
-  }, [
-    joinedError,
-    joinedLoading,
-    joinedLotteries,
-    ownerError,
-    ownerLoading,
-    ownerLotteries,
-    user,
-  ]);
+  }, [joinedError, joinedLoading, joinedLotteries, ownerError, ownerLoading, ownerLotteries, user]);
 
-  return (
-    <LotteryContext.Provider value={lotteriesData}>
-      {props.children}
-    </LotteryContext.Provider>
-  );
+  return <LotteryContext.Provider value={lotteriesData}>{props.children}</LotteryContext.Provider>;
 };
 
 export default LotteryProvider;

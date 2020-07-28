@@ -1,7 +1,7 @@
-const firebase = require('@firebase/testing');
-const fs = require('fs');
+import firebase from '@firebase/testing';
+import fs from 'fs';
 
-const projectId = `randottery-dev`;
+const projectId = 'randottery-dev';
 // const projectId = `rules-spec-${Date.now()}`;
 
 module.exports.setup = async (auth, data) => {
@@ -36,7 +36,7 @@ module.exports.setup = async (auth, data) => {
 
 module.exports.teardown = async () => {
   Promise.all(
-    firebase.apps().map((app) => app.delete()),
-    firebase.clearFirestoreData({ projectId })
+    firebase.apps().map(app => app.delete()),
+    firebase.clearFirestoreData({ projectId }),
   );
 };

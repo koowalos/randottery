@@ -1,32 +1,24 @@
 import React, { useContext } from 'react';
-import {
-  Form,
-  Input,
-  Button,
-  Checkbox,
-  Typography,
-  DatePicker,
-  InputNumber,
-} from 'antd';
+import { Form, Input, Button, Checkbox, Typography, DatePicker, InputNumber } from 'antd';
 import { createLottery } from '../../../firebase';
 import { UserContext } from '../../../Providers/UserProvider';
 import moment from 'moment';
 import { RouteComponentProps } from 'react-router-dom';
 
-const disabledDate = (current) => {
+const disabledDate = current => {
   return current && current < moment().endOf('day').subtract(1, 'day');
 };
 
-interface NewProps extends RouteComponentProps<any> {}
+type NewProps = RouteComponentProps<any>
 
 const { Title } = Typography;
 
-const New: React.FC<NewProps> = (props) => {
+const New: React.FC<NewProps> = props => {
   const [form] = Form.useForm();
   const { history } = props;
   const userData: any = useContext(UserContext);
 
-  const onFinish = (fieldsValue) => {
+  const onFinish = fieldsValue => {
     const endDate = +fieldsValue['endDate'].format('x');
     const values = {
       ...fieldsValue,
@@ -41,7 +33,7 @@ const New: React.FC<NewProps> = (props) => {
         numberOfWinners: +values.numberOfWinners,
         prize: values.prize,
       },
-      userData.user.uid
+      userData.user.uid,
     );
   };
 
@@ -95,12 +87,7 @@ const New: React.FC<NewProps> = (props) => {
             }),
           ]}
         >
-          <DatePicker
-            showTime
-            format="DD-MM-YYYY HH:mm"
-            showNow={false}
-            disabledDate={disabledDate}
-          />
+          <DatePicker showTime format="DD-MM-YYYY HH:mm" showNow={false} disabledDate={disabledDate} />
         </Form.Item>
         <Form.Item label="Prize" name="prize" initialValue="">
           <Input placeholder="Enter prize name (optional)" />
@@ -115,7 +102,7 @@ const New: React.FC<NewProps> = (props) => {
             placeholder="Enter maximum number of participants"
             type="number"
             min={0}
-            style={{ width: `100%` }}
+            style={{ width: '100%' }}
           />
         </Form.Item>
         <Form.Item
@@ -135,19 +122,12 @@ const New: React.FC<NewProps> = (props) => {
                 if (!isMore || maxParticipants === 0) {
                   return Promise.resolve();
                 }
-                return Promise.reject(
-                  'Cannot be bigger than number of participants'
-                );
+                return Promise.reject('Cannot be bigger than number of participants');
               },
             }),
           ]}
         >
-          <InputNumber
-            placeholder="Default 1"
-            type="number"
-            min={1}
-            style={{ width: `100%` }}
-          />
+          <InputNumber placeholder="Default 1" type="number" min={1} style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item
           valuePropName="checked"
@@ -158,18 +138,14 @@ const New: React.FC<NewProps> = (props) => {
               validator(rule, value) {
                 const maxParticipants = form.getFieldValue('maxParticipants');
                 if (maxParticipants === 0 && value === true) {
-                  return Promise.reject(
-                    'Cannot be selected for unlimited number of participants'
-                  );
+                  return Promise.reject('Cannot be selected for unlimited number of participants');
                 }
                 return Promise.resolve();
               },
             }),
           ]}
         >
-          <Checkbox defaultChecked={false}>
-            Start immediately with max participants
-          </Checkbox>
+          <Checkbox defaultChecked={false}>Start immediately with max participants</Checkbox>
         </Form.Item>
         <Form.Item style={{ textAlign: 'center' }}>
           <Button

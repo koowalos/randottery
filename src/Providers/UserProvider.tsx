@@ -6,14 +6,14 @@ export const UserContext = createContext({
   user: null,
 });
 
-const UserProvider: React.FC = (props) => {
+const UserProvider: React.FC = props => {
   const [user, setUser] = useState<any>({
     loading: true,
     user: null,
   });
 
   useEffect(() => {
-    auth.onAuthStateChanged(async (userAuth) => {
+    auth.onAuthStateChanged(async userAuth => {
       const user = await generateUserDocument(userAuth);
       setUser({
         loading: false,
@@ -22,9 +22,7 @@ const UserProvider: React.FC = (props) => {
     });
   }, []);
 
-  return (
-    <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
-  );
+  return <UserContext.Provider value={user}>{props.children}</UserContext.Provider>;
 };
 
 export default UserProvider;

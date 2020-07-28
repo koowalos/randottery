@@ -3,17 +3,7 @@ import './App.less';
 import { Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
-import {
-  Landing,
-  Home,
-  Join,
-  JoinDetails,
-  New,
-  Lottery,
-  Error404,
-  SignIn,
-  Register,
-} from './Components/Pages';
+import { Landing, Home, Join, JoinDetails, New, Lottery, Error404, SignIn, Register } from './Components/Pages';
 import { UserContext } from './Providers/UserProvider';
 import { signOut } from './firebase';
 
@@ -31,12 +21,7 @@ function App() {
       <Layout className="layout">
         <Header>
           <div className="custom-container">
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              defaultSelectedKeys={['2']}
-              style={{ textAlign: 'right' }}
-            >
+            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} style={{ textAlign: 'right' }}>
               {userData.user ? (
                 <Menu.Item key="1">
                   <Link to="/">Home</Link>
@@ -49,11 +34,7 @@ function App() {
                   signOut();
                 }}
               >
-                {userData.user ? (
-                  `Sign Out ${userData.user.email}`
-                ) : (
-                  <Link to="/signin">Sign in</Link>
-                )}
+                {userData.user ? `Sign Out ${userData.user.email}` : <Link to="/signin">Sign in</Link>}
               </Menu.Item>
             </Menu>
           </div>
@@ -81,9 +62,7 @@ function App() {
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          <div className="custom-container">
-            Ant Design ©2020 Created by Kowal & Kamil
-          </div>
+          <div className="custom-container">Ant Design ©2020 Created by Kowal & Kamil</div>
         </Footer>
       </Layout>
     </div>

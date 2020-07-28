@@ -18,8 +18,12 @@
     "axios": "^0.19.2",
     "copy-text-to-clipboard": "^2.2.0",
     "craco-less": "^1.17.0",
+    "cypress": "^4.4.1",
+    "cypress-cucumber-preprocessor": "^2.3.1",
     "firebase": "^7.15.5",
     "history": "^4.10.1",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "lodash": "^4.17.15",
     "moment": "^2.27.0",
     "react": "^16.13.1",
@@ -28,9 +32,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "typescript": "~3.7.2",
-    "uuid": "^8.1.0",
-    "cypress": "^4.4.1",
-    "cypress-cucumber-preprocessor": "^2.3.1"
+    "uuid": "^8.1.0"
   },
   "scripts": {
     "start": "craco start",
@@ -41,7 +43,8 @@
     "deploy": "craco build && firebase deploy",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:frontend": "craco build && firebase deploy --only hosting",
-    "test-e2e": "./node_modules/.bin/cypress run --headed"
+    "test-e2e": "./node_modules/.bin/cypress run --headed",
+    "lint": "eslint './src/**/*.{js,ts,tsx}' --fix"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
@@ -51,14 +54,28 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
       "not op_mini all"
     ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-react": "^7.20.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix"
     ]
   }
 }

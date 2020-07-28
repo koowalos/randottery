@@ -8,11 +8,9 @@ import { LotteryContext } from '../../../Providers/LotteryProvider';
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-interface HomeProps extends RouteComponentProps<any> {
-  /* Parent component's props*/
-}
+type HomeProps = RouteComponentProps<any>
 
-const Home: React.FC<HomeProps> = (props) => {
+const Home: React.FC<HomeProps> = props => {
   const userData: any = useContext(UserContext);
   const lotteriesData: any = useContext(LotteryContext);
 
@@ -24,21 +22,13 @@ const Home: React.FC<HomeProps> = (props) => {
     return <div>LOADING...</div>;
   }
 
-  const joinedActive = lotteriesData.lotteries.filter(
-    (o) => o.status === 'active' && o.owner !== userData.user.uid
-  );
+  const joinedActive = lotteriesData.lotteries.filter(o => o.status === 'active' && o.owner !== userData.user.uid);
   const joinedEnded = lotteriesData.lotteries.filter(
-    (o) =>
-      (o.status === 'ended' || o.status === 'cancelled') &&
-      o.owner !== userData.user.uid
+    o => (o.status === 'ended' || o.status === 'cancelled') && o.owner !== userData.user.uid,
   );
-  const myActive = lotteriesData.lotteries.filter(
-    (o) => o.status === 'active' && o.owner === userData.user.uid
-  );
+  const myActive = lotteriesData.lotteries.filter(o => o.status === 'active' && o.owner === userData.user.uid);
   const myEnded = lotteriesData.lotteries.filter(
-    (o) =>
-      (o.status === 'ended' || o.status === 'cancelled') &&
-      o.owner === userData.user.uid
+    o => (o.status === 'ended' || o.status === 'cancelled') && o.owner === userData.user.uid,
   );
 
   return (
@@ -61,8 +51,7 @@ const Home: React.FC<HomeProps> = (props) => {
             <TabPane
               tab={
                 <>
-                  Active{' '}
-                  <span style={{ color: '#ccc' }}>({joinedActive.length})</span>
+                  Active <span style={{ color: '#ccc' }}>({joinedActive.length})</span>
                 </>
               }
               key="1"
@@ -72,8 +61,7 @@ const Home: React.FC<HomeProps> = (props) => {
             <TabPane
               tab={
                 <>
-                  Ended{' '}
-                  <span style={{ color: '#ccc' }}>({joinedEnded.length})</span>
+                  Ended <span style={{ color: '#ccc' }}>({joinedEnded.length})</span>
                 </>
               }
               key="2"
@@ -99,8 +87,7 @@ const Home: React.FC<HomeProps> = (props) => {
             <TabPane
               tab={
                 <>
-                  Active{' '}
-                  <span style={{ color: '#ccc' }}>({myActive.length})</span>
+                  Active <span style={{ color: '#ccc' }}>({myActive.length})</span>
                 </>
               }
               key="1"
@@ -110,8 +97,7 @@ const Home: React.FC<HomeProps> = (props) => {
             <TabPane
               tab={
                 <>
-                  Ended{' '}
-                  <span style={{ color: '#ccc' }}>({myEnded.length})</span>
+                  Ended <span style={{ color: '#ccc' }}>({myEnded.length})</span>
                 </>
               }
               key="2"
