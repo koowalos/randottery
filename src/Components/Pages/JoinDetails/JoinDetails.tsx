@@ -8,21 +8,19 @@ import { UserContext } from '../../../Providers/UserProvider';
 import { timestampToDate } from '../../../helpers';
 
 const { Title, Text } = Typography;
-interface JoinDetailsProps extends RouteComponentProps<any> {}
+type JoinDetailsProps = RouteComponentProps<any>
 
-const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
+const JoinDetails: React.FC<JoinDetailsProps> = props => {
   const { history } = props;
-  let { id } = useParams();
+  const { id } = useParams();
 
   const userData: any = useContext(UserContext);
 
-  const [values, loading, error]: any = useDocument(
-    firebase.firestore().doc(`lotteries/${id}`)
-  );
+  const [values, loading, error]: any = useDocument(firebase.firestore().doc(`lotteries/${id}`));
 
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
+  const onFinish = () => {
     joinLottery(id, userData.user.uid);
   };
 
@@ -33,14 +31,7 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
   if (loading || !values) {
     return <div>LOADING...</div>;
   }
-  const {
-    name,
-    prize,
-    participants,
-    maxParticipants,
-    endDate,
-    endWhenFull,
-  } = values.data();
+  const { name, prize, participants, maxParticipants, endDate, endWhenFull } = values.data();
   const { id: dataId } = values;
 
   return (
@@ -48,12 +39,12 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
       <div className="details-wrapper">
         <Title style={{ marginTop: 70, marginBottom: 5 }}>{name}</Title>
         <Text type="secondary">
-          ID: {``}
+          ID: {''}
           {dataId}
         </Text>
         {prize ? (
           <Title level={3} style={{ marginTop: 30 }}>
-            Prize to be won: {``} {prize}
+            Prize to be won: {''} {prize}
           </Title>
         ) : (
           <Title level={3} style={{ marginTop: 30 }}>
@@ -66,7 +57,7 @@ const JoinDetails: React.FC<JoinDetailsProps> = (props) => {
         </Title>
         <Text type="secondary" style={{ marginTop: 30 }}>
           {endWhenFull
-            ? `This lottery will start immediately when maximum number of participants is reached`
+            ? 'This lottery will start immediately when maximum number of participants is reached'
             : `This lottery will end on: ${timestampToDate(endDate.seconds)}`}
         </Text>
       </div>

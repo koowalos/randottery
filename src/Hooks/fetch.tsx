@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
 export const useGetFetch = (
-  url: string
+  url: string,
 ): {
   loading: boolean;
   done: boolean;
@@ -26,7 +26,7 @@ export const useGetFetch = (
 
     axios
       .get(url)
-      .then((res) => {
+      .then(res => {
         setResponse({
           loading: false,
           done: true,
@@ -34,7 +34,7 @@ export const useGetFetch = (
           response: res,
         });
       })
-      .catch((err) => {
+      .catch(err => {
         setResponse({
           loading: false,
           done: false,

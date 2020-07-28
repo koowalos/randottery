@@ -2,8 +2,7 @@ import React from 'react';
 import { Table, Button, message } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { timestampToDate } from '../../../helpers';
-
-const copy = require('copy-text-to-clipboard');
+import copy from 'copy-text-to-clipboard';
 
 interface LotteryTableProps extends RouteComponentProps<any> {
   data?: Array<{
@@ -18,7 +17,7 @@ interface LotteryTableProps extends RouteComponentProps<any> {
   }>;
 }
 
-const LotteryTable: React.FC<LotteryTableProps> = (props) => {
+const LotteryTable: React.FC<LotteryTableProps> = props => {
   const { history, data } = props;
 
   const columns = [
@@ -27,12 +26,12 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
       title: 'ID',
       dataIndex: 'id',
       width: 78,
-      render: (id) => (
+      render: id => (
         <Button
           size="small"
           onClick={() => {
             copy(window.location.origin + '/#/join/' + id);
-            message.success(`Copied lottery URL to clipboard`, 1);
+            message.success('Copied lottery URL to clipboard', 1);
           }}
         >
           Copy URL
@@ -58,7 +57,7 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
       title: 'End date',
       dataIndex: 'endDate',
       width: 225,
-      render: (endDate) => timestampToDate(endDate.seconds),
+      render: endDate => timestampToDate(endDate.seconds),
     },
     {
       title: 'Action',
@@ -77,13 +76,7 @@ const LotteryTable: React.FC<LotteryTableProps> = (props) => {
 
   return (
     <div>
-      <Table
-        size="small"
-        scroll={{ x: 'auto' }}
-        pagination={false}
-        columns={columns}
-        dataSource={data}
-      />
+      <Table size="small" scroll={{ x: 'auto' }} pagination={false} columns={columns} dataSource={data} />
     </div>
   );
 };

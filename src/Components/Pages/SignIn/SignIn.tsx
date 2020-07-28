@@ -8,7 +8,7 @@ interface SignInProps extends RouteComponentProps<any> {
   someProp?: any;
 }
 
-const SignIn: React.FC<SignInProps> = (props) => {
+const SignIn: React.FC<SignInProps> = () => {
   const [form] = Form.useForm();
   const userData: any = useContext(UserContext);
   const [error, setError] = useState<any>(false);
@@ -27,12 +27,12 @@ const SignIn: React.FC<SignInProps> = (props) => {
   }, [error, form]);
 
   const [loading, setLoading] = useState(false);
-  const onFinish = (values) => {
+  const onFinish = values => {
     setLoading(true);
     const succeed = () => {
       setLoading(false);
     };
-    const fail = (error) => {
+    const fail = error => {
       setLoading(false);
       setError(error);
     };
@@ -77,10 +77,7 @@ const SignIn: React.FC<SignInProps> = (props) => {
               }),
             ]}
           >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="E-mail "
-            />
+            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="E-mail " />
           </Form.Item>
           <Form.Item
             name="password"
@@ -97,23 +94,14 @@ const SignIn: React.FC<SignInProps> = (props) => {
               }),
             ]}
           >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Password"
-            />
+            <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="Password" />
           </Form.Item>
           <Form.Item style={{ textAlign: 'center' }}>
             <Link to="/password-reset">Forgot password</Link>
           </Form.Item>
 
           <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
-            <Button
-              htmlType="submit"
-              className="login-form-button"
-              type="primary"
-              loading={loading}
-            >
+            <Button htmlType="submit" className="login-form-button" type="primary" loading={loading}>
               Log in
             </Button>
             <div>

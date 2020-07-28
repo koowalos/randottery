@@ -1,4 +1,4 @@
-const now = parseInt(Date.now() / 1000);
+const now = parseInt(Date.now() / 1000, 10);
 
 export const mockUserPonciusz = {
   uid: 'ponciusz',

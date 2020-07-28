@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as _ from 'lodash';
-import axios from 'axios'
+import axios from 'axios';
 require('dotenv').config();
 
 admin.initializeApp();
@@ -21,7 +21,7 @@ const addToCloudTasks = async (id: string, endDate: { seconds: number }) => {
       httpMethod: 'POST',
       url,
       body: Buffer.from(JSON.stringify({
-        id
+        id,
       })).toString('base64'),
       headers: {
         'Content-Type': 'application/json',
@@ -40,31 +40,30 @@ const addToCloudTasks = async (id: string, endDate: { seconds: number }) => {
     task,
   });
 
-  return response
-}
+  return response;
+};
 
 const runCloudTask = async (taskName: string) => {
   const { CloudTasksClient } = require('@google-cloud/tasks');
   const tasksClient = new CloudTasksClient();
   await tasksClient.runTask({ name: taskName });
-}
+};
 
 const deleteCloudTask = async (taskName: string) => {
   const { CloudTasksClient } = require('@google-cloud/tasks');
   const tasksClient = new CloudTasksClient();
   await tasksClient.deleteTask({ name: taskName });
-}
-
+};
 
 const runInitLotterySolver = async (id: string) => {
   return axios.post(`http://localhost:5001/${project}/${location}/initLotterySolver`, {
-    id
-  }).then((result) => {
-    return result
-  }).catch((err) => {
-    return err
+    id,
+  }).then(result => {
+    return result;
+  }).catch(err => {
+    return err;
   });
-}
+};
 
 export const addToTaskQueue = functions
   .region(location)
@@ -73,11 +72,11 @@ export const addToTaskQueue = functions
     let update = { taskName: 'dummyName' };
 
     if (!snap.exists) {
-      return
+      return;
     }
 
     if (!process.env.FUNCTIONS_EMULATOR) {
-      const { name } = await addToCloudTasks(context.params.documentId, snap.data().endDate)
+      const { name } = await addToCloudTasks(context.params.documentId, snap.data().endDate);
       update = { taskName: name };
     }
 
@@ -87,7 +86,7 @@ export const addToTaskQueue = functions
 export const lotteryOnUpdate = functions
   .region(location)
   .firestore.document('/lotteries/{documentId}')
-  .onUpdate(async (change) => {
+  .onUpdate(async change => {
     // const before = change.before.data();
     const after = change.after.data();
     const { endWhenFull, participants, maxParticipants, status, taskName } = after;
@@ -99,26 +98,25 @@ export const lotteryOnUpdate = functions
       status === 'active'
     ) {
       if (!process.env.FUNCTIONS_EMULATOR) {
-        await runCloudTask(taskName) // solve lottery because its full
-        return
-      } else {
-        await runInitLotterySolver(change.after.id)
-        return
+        await runCloudTask(taskName); // solve lottery because its full
+        return;
       }
+      await runInitLotterySolver(change.after.id);
+      return;
     }
-    return
+    return;
   });
 
 export const lotteryOnDelete = functions
   .region(location)
   .firestore.document('/lotteries/{documentId}')
-  .onDelete(async (snap) => {
+  .onDelete(async snap => {
     if (!snap.exists) {
-      return
+      return;
     }
     if (!process.env.FUNCTIONS_EMULATOR) {
-      await deleteCloudTask(snap.data().taskName)
-      return
+      await deleteCloudTask(snap.data().taskName);
+      return;
     }
   });
 
@@ -128,20 +126,20 @@ export const initLotterySolver = functions
     const { id } = req.body;
 
     if (!id) {
-      return res.status(400).json({ message: `Lottery ID missing` });
+      return res.status(400).json({ message: 'Lottery ID missing' });
     }
 
     const lotteryRef = admin.firestore().collection('lotteries').doc(id);
     const doc = await lotteryRef.get();
 
     if (!doc.exists) {
-      return res.status(400).json({ message: `Lottery does not exist` });
+      return res.status(400).json({ message: 'Lottery does not exist' });
     }
 
     const { participants, numberOfWinners, winners, status }: any = doc.data();
 
     if (winners || status !== 'active') {
-      return res.status(400).json({ message: `Lottery already closed`, id });
+      return res.status(400).json({ message: 'Lottery already closed', id });
     }
 
     const winnerDetails: any = [];
@@ -174,5 +172,5 @@ export const initLotterySolver = functions
       { merge: true }
     );
 
-    return res.status(200).json({ message: `ok`, winners: winnersResult });
+    return res.status(200).json({ message: 'ok', winners: winnersResult });
   });

@@ -10,7 +10,7 @@ interface RegisterProps extends RouteComponentProps<any> {
   someProp?: any;
 }
 
-const Register: React.FC<RegisterProps> = (props) => {
+const Register: React.FC<RegisterProps> = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(false);
@@ -31,12 +31,12 @@ const Register: React.FC<RegisterProps> = (props) => {
 
   const userData: any = useContext(UserContext);
 
-  const onFinish = (values) => {
+  const onFinish = values => {
     setLoading(true);
     const succeed = () => {
       setLoading(false);
     };
-    const fail = (error) => {
+    const fail = error => {
       setLoading(false);
       setError(error);
     };
@@ -83,10 +83,7 @@ const Register: React.FC<RegisterProps> = (props) => {
               }),
             ]}
           >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="E-mail"
-            />
+            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="E-mail" />
           </Form.Item>
           <Form.Item
             name="password"
@@ -127,9 +124,7 @@ const Register: React.FC<RegisterProps> = (props) => {
                   if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(
-                    'The two passwords that you entered do not match!'
-                  );
+                  return Promise.reject('The two passwords that you entered do not match!');
                 },
               }),
             ]}
@@ -149,10 +144,7 @@ const Register: React.FC<RegisterProps> = (props) => {
               },
             ]}
           >
-            <Input
-              placeholder="Displayed name (public)"
-              prefix={<UserOutlined className="site-form-item-icon" />}
-            />
+            <Input placeholder="Displayed name (public)" prefix={<UserOutlined className="site-form-item-icon" />} />
           </Form.Item>
           <Form.Item
             name="agreement"
@@ -160,10 +152,7 @@ const Register: React.FC<RegisterProps> = (props) => {
             style={{ textAlign: 'center' }}
             rules={[
               {
-                validator: (_, value) =>
-                  value
-                    ? Promise.resolve()
-                    : Promise.reject('Should accept agreement'),
+                validator: (_, value) => (value ? Promise.resolve() : Promise.reject('Should accept agreement')),
               },
             ]}
           >
