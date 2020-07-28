@@ -6,4 +6,4 @@ Feature: Google basic test
     Given Google home page has been loaded
 
   Scenario: I test google page
-    Then I should see "google"
+    Then I should see "Lotteries you are participating in"

@@ -24,10 +24,6 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-// export const logIn = () => {
-//   cy.visit(`${Cypress.env('url')}#/signin`);
-//   cy.get('#signInForm_email').type(Cypress.env('user'));
-//   cy.get('#signInForm_password').type(Cypress.env('password'));
-//   cy.get('#signInForm_logIn').click();
-//   // cy.url().should('include', '/overview');
-// };
+Cypress.Commands.add('logIn', () => {
+  cy.visit(`${Cypress.env('url')}#/signin`).get('#signInForm_email').type(Cypress.env('user')).get('#signInForm_password').type(Cypress.env('password')).get('#signInForm_logIn').click();
+});
