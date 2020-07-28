@@ -1,4 +1,9 @@
-import { mockData, mockUser } from './mocks';
+import {
+  mockData,
+  mockUserPonciusz,
+  // mockUserKowal,
+  mockUserKula,
+} from './mocks';
 import firebase from 'firebase/app';
 const { setup, teardown } = require('./helpers');
 
@@ -9,16 +14,20 @@ const firebaseTimestamp = (seconds, subtract = false) => {
 };
 
 describe('Database rules', () => {
-  let db;
-  let ref;
+  let dbAuthPonciusz;
+  let dbAuthKula;
+
   let refLotteries;
+  let refLotteriesKula;
   let refUsers;
-  // Applies only to tests in this describe block
+
   beforeAll(async () => {
-    db = await setup(mockUser, mockData);
-    ref = db.collection('some-nonexistent-collection');
-    refLotteries = db.collection('lotteries');
-    refUsers = db.collection('users');
+    dbAuthPonciusz = await setup(mockUserPonciusz, mockData);
+    dbAuthKula = await setup(mockUserKula);
+
+    refLotteries = dbAuthPonciusz.collection('lotteries');
+    refUsers = dbAuthPonciusz.collection('users');
+    refLotteriesKula = dbAuthKula.collection('lotteries');
   });
 
   afterAll(async () => {
@@ -31,6 +40,7 @@ describe('Database rules', () => {
   });
 
   test('READ   | DENY  | when reading/writing an unauthorized collection', async () => {
+    const ref = dbAuthPonciusz.collection('some-nonexistent-collection');
     await expect(ref.get()).toDeny();
   });
 
@@ -140,15 +150,27 @@ describe('Database rules', () => {
 
   test('UPDATE | ALLOW | join lottery', async () => {
     await expect(
-      refLotteries.doc('koowal_b').update({
+      refLotteries.doc('kowal_b').update({
         participants: ['kula', 'ponciusz'],
       })
     ).toAllow();
   });
 
+  test('UPDATE | ALLOW | join lottery and should trigger initLotterySolver', async () => {
+    await expect(
+      refLotteriesKula.doc('ponciusz_d').update({
+        participants: ['kowal', 'kula'],
+      })
+    ).toAllow();
+
+    await new Promise((resolve) => setTimeout(resolve, 300)); // wait for cloud function
+    const data = await refLotteries.doc('ponciusz_d').get();
+    await expect(data).toAllow();
+  });
+
   test('UPDATE | ALLOW | leave lottery', async () => {
     await expect(
-      refLotteries.doc('koowal_b').update({
+      refLotteries.doc('kowal_b').update({
         participants: ['kula'],
       })
     ).toAllow();
@@ -157,14 +179,14 @@ describe('Database rules', () => {
   test('UPDATE | DENY  | join own lottery', async () => {
     await expect(
       refLotteries.doc('ponciusz_a').update({
-        participants: ['koowal', 'kula', 'ponciusz'],
+        participants: ['kowal', 'kula', 'ponciusz'],
       })
     ).toDeny();
   });
 
   test('UPDATE | DENY  | join full lottery', async () => {
     await expect(
-      refLotteries.doc('koowal_c').update({
+      refLotteries.doc('kowal_c').update({
         participants: ['kula', 'karni', 'ponciusz'],
       })
     ).toDeny();

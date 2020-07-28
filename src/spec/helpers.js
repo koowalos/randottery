@@ -1,15 +1,16 @@
 const firebase = require('@firebase/testing');
 const fs = require('fs');
 
+const projectId = `randottery-dev`;
+// const projectId = `rules-spec-${Date.now()}`;
+
 module.exports.setup = async (auth, data) => {
-  const projectId = `rules-spec-${Date.now()}`;
-  // const projectId = `randomizer-ae71a`;
-  const app = await firebase.initializeTestApp({
+  const app = firebase.initializeTestApp({
     projectId,
     auth,
   });
 
-  const adminApp = await firebase.initializeAdminApp({
+  const adminApp = firebase.initializeAdminApp({
     projectId,
   });
 
@@ -34,5 +35,8 @@ module.exports.setup = async (auth, data) => {
 };
 
 module.exports.teardown = async () => {
-  Promise.all(firebase.apps().map((app) => app.delete()));
+  Promise.all(
+    firebase.apps().map((app) => app.delete()),
+    firebase.clearFirestoreData({ projectId })
+  );
 };
