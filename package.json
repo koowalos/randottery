@@ -25,7 +25,7 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "lodash": "^4.17.15",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-firebase-hooks": "^2.2.0",
